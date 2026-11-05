@@ -1,0 +1,446 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Nesting Rules
+[/meta]
+
+h1. Nesting Rules
+
+Tests for Section 21 of the specification.
+
+h2. Allowed
+
+h3. Note inside an expandable block, list inside the note {#nesting-more-note-list}
+[code om]
+[more Outer]
+[note]
+* Item
+[/note]
+[/more]
+[/code]
+[code html]
+<details>
+<summary>Outer</summary>
+<div role="note" class="note">
+<ul>
+<li>Item</li>
+</ul>
+</div>
+</details>
+[/code]
+
+h3. Code inside a long definition {#nesting-def-code}
+```om
+[def Term]
+[code]
+x
+[/code]
+[/def]
+```
+[code html]
+<dl>
+<dt>Term</dt>
+<dd>
+<pre><code>x
+</code></pre>
+</dd>
+</dl>
+[/code]
+
+h3. Lists inside a long definition {#nesting-def-list}
+[code om]
+[def Term]
+* One
+* Two
+[/def]
+[/code]
+[code html]
+<dl>
+<dt>Term</dt>
+<dd>
+<ul>
+<li>One</li>
+<li>Two</li>
+</ul>
+</dd>
+</dl>
+[/code]
+
+h3. Block language section with a heading, a note and a nested section {#nesting-lang-block}
+[code om]
+[lang fr]
+h2. Bonjour
+
+[note]
+Texte.
+[/note]
+
+[lang de]
+Hallo.
+[/lang]
+[/lang]
+[/code]
+[code html]
+<div lang="fr">
+<h2 id="bonjour">Bonjour</h2>
+<div role="note" class="note">
+<p>Texte.</p>
+</div>
+<div lang="de">
+<p>Hallo.</p>
+</div>
+</div>
+[/code]
+
+h3. Footnote block inside a block language section {#nesting-lang-fn}
+[code om]
+[lang fr]
+[fn]
+1. Note.
+[/fn]
+[/lang]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Empty quote {#nesting-empty-quote}
+[code om]
+[quote]
+[/quote]
+[/code]
+[code html]
+<blockquote></blockquote>
+[/code]
+
+h2. Not Allowed
+
+h3. Note inside a quote {#nesting-quote-note}
+[code om]
+[quote]
+[note]
+Text.
+[/note]
+[/quote]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Quote inside a note {#nesting-note-quote}
+[code om]
+[note]
+[quote]
+Text.
+[/quote]
+[/note]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Expandable block inside a quote {#nesting-quote-more}
+[code om]
+[quote]
+[more Title]
+Text.
+[/more]
+[/quote]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Short form quote inside a bracket quote {#nesting-quote-short-quote}
+[code om]
+[quote]
+> Inner.
+[/quote]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Heading inside a long definition {#nesting-def-heading}
+[code om]
+[def Term]
+h2. Heading
+[/def]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Definition inside a long definition {#nesting-def-def}
+[code om]
+[def Outer]
+[def Inner]
+Text.
+[/def]
+[/def]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Table inside a quote {#nesting-quote-table}
+[code om]
+[quote]
+Text.
+| a | b |
+[/quote]
+[/code]
+[code error]
+invalid-nesting 3
+[/code]
+
+h3. Heading inside a note {#nesting-note-heading}
+[code om]
+[note]
+h2. Heading
+[/note]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Block tag inside a table cell {#nesting-table-cell-block}
+[code om]
+| [note] |
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h2. Nesting depth
+
+h3. Sixteen nested containers are allowed {#nesting-depth-16-containers}
+[code om]
+[more Level 1]
+[more Level 2]
+[more Level 3]
+[more Level 4]
+[more Level 5]
+[more Level 6]
+[more Level 7]
+[more Level 8]
+[more Level 9]
+[more Level 10]
+[more Level 11]
+[more Level 12]
+[more Level 13]
+[more Level 14]
+[more Level 15]
+[more Level 16]
+Deep.
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/code]
+[code html]
+<details><summary>Level 1</summary>
+<details><summary>Level 2</summary>
+<details><summary>Level 3</summary>
+<details><summary>Level 4</summary>
+<details><summary>Level 5</summary>
+<details><summary>Level 6</summary>
+<details><summary>Level 7</summary>
+<details><summary>Level 8</summary>
+<details><summary>Level 9</summary>
+<details><summary>Level 10</summary>
+<details><summary>Level 11</summary>
+<details><summary>Level 12</summary>
+<details><summary>Level 13</summary>
+<details><summary>Level 14</summary>
+<details><summary>Level 15</summary>
+<details><summary>Level 16</summary>
+<p>Deep.</p>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+</details>
+[/code]
+
+h3. A seventeenth container is an error {#nesting-depth-17-containers}
+[code om]
+[more Level 1]
+[more Level 2]
+[more Level 3]
+[more Level 4]
+[more Level 5]
+[more Level 6]
+[more Level 7]
+[more Level 8]
+[more Level 9]
+[more Level 10]
+[more Level 11]
+[more Level 12]
+[more Level 13]
+[more Level 14]
+[more Level 15]
+[more Level 16]
+[more Level 17]
+Too deep.
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/code]
+[code error]
+nesting-too-deep 17
+[/code]
+
+h3. Sixteen list levels are allowed {#nesting-depth-16-list-levels}
+[code om]
+* Level 1
+** Level 2
+*** Level 3
+**** Level 4
+***** Level 5
+****** Level 6
+******* Level 7
+******** Level 8
+********* Level 9
+********** Level 10
+*********** Level 11
+************ Level 12
+************* Level 13
+************** Level 14
+*************** Level 15
+**************** Level 16
+[/code]
+[code html]
+<ul><li>Level 1
+<ul><li>Level 2
+<ul><li>Level 3
+<ul><li>Level 4
+<ul><li>Level 5
+<ul><li>Level 6
+<ul><li>Level 7
+<ul><li>Level 8
+<ul><li>Level 9
+<ul><li>Level 10
+<ul><li>Level 11
+<ul><li>Level 12
+<ul><li>Level 13
+<ul><li>Level 14
+<ul><li>Level 15
+<ul><li>Level 16
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+</li></ul>
+[/code]
+
+h3. A seventeenth list level is an error {#nesting-depth-17-list-levels}
+[code om]
+* Level 1
+** Level 2
+*** Level 3
+**** Level 4
+***** Level 5
+****** Level 6
+******* Level 7
+******** Level 8
+********* Level 9
+********** Level 10
+*********** Level 11
+************ Level 12
+************* Level 13
+************** Level 14
+*************** Level 15
+**************** Level 16
+***************** Level 17
+[/code]
+[code error]
+nesting-too-deep 17
+[/code]
+
+h3. Containers and list levels count together {#nesting-depth-mixed}
+Fifteen containers plus a list makes 16; the nested list item would be the 17th level.
+[code om]
+[more Level 1]
+[more Level 2]
+[more Level 3]
+[more Level 4]
+[more Level 5]
+[more Level 6]
+[more Level 7]
+[more Level 8]
+[more Level 9]
+[more Level 10]
+[more Level 11]
+[more Level 12]
+[more Level 13]
+[more Level 14]
+[more Level 15]
+* Level 16
+** Level 17
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/more]
+[/code]
+[code error]
+nesting-too-deep 17
+[/code]

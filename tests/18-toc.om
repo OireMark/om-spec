@@ -1,0 +1,361 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Table of Contents
+[/meta]
+
+h1. Table of Contents
+
+Tests for Section 18 of the specification.
+
+h2. Basics
+
+h3. All headings {#toc-basic}
+[code om]
+[toc]
+
+h1. Guide
+h2. Install
+h2. Use
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#guide">Guide</a>
+<ol>
+<li><a href="#install">Install</a></li>
+<li><a href="#use">Use</a></li>
+</ol>
+</li>
+</ol>
+</nav>
+<h1 id="guide">Guide</h1>
+<h2 id="install">Install</h2>
+<h2 id="use">Use</h2>
+[/code]
+
+h3. Level range {#toc-range}
+[code om]
+[toc 2-3]
+
+h1. Guide
+h2. Install
+h3. Windows
+h4. Details
+h2. Use
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#install">Install</a>
+<ol>
+<li><a href="#windows">Windows</a></li>
+</ol>
+</li>
+<li><a href="#use">Use</a></li>
+</ol>
+</nav>
+<h1 id="guide">Guide</h1>
+<h2 id="install">Install</h2>
+<h3 id="windows">Windows</h3>
+<h4 id="details">Details</h4>
+<h2 id="use">Use</h2>
+[/code]
+
+h3. Custom heading IDs are used in links {#toc-custom-id}
+[code om]
+[toc]
+
+h2. Setup {#install}
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#install">Setup</a></li>
+</ol>
+</nav>
+<h2 id="install">Setup</h2>
+[/code]
+
+h2. Titles
+
+h3. Title {#toc-title}
+[code om]
+[toc Contents]
+
+h2. One
+[/code]
+[code html]
+<nav class="toc" aria-labelledby="toc-1">
+<p class="toc-title" id="toc-1">Contents</p>
+<ol>
+<li><a href="#one">One</a></li>
+</ol>
+</nav>
+<h2 id="one">One</h2>
+[/code]
+
+h3. Range and title {#toc-range-title}
+[code om]
+[toc 2-4 Contents]
+
+h1. Book
+h2. Chapter
+[/code]
+[code html]
+<nav class="toc" aria-labelledby="toc-1">
+<p class="toc-title" id="toc-1">Contents</p>
+<ol>
+<li><a href="#chapter">Chapter</a></li>
+</ol>
+</nav>
+<h1 id="book">Book</h1>
+<h2 id="chapter">Chapter</h2>
+[/code]
+
+h3. A heading slug avoids the earlier table of contents ID {#toc-id-collision}
+[code om]
+[toc Contents]
+
+h2. Toc 1
+[/code]
+[code html]
+<nav class="toc" aria-labelledby="toc-1">
+<p class="toc-title" id="toc-1">Contents</p>
+<ol>
+<li><a href="#toc-1-2">Toc 1</a></li>
+</ol>
+</nav>
+<h2 id="toc-1-2">Toc 1</h2>
+[/code]
+
+h3. Untitled tables of contents do not use up IDs {#toc-id-untitled-skipped}
+[code om]
+[toc]
+
+[toc Contents]
+
+h2. One
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#one">One</a></li>
+</ol>
+</nav>
+<nav class="toc" aria-labelledby="toc-1">
+<p class="toc-title" id="toc-1">Contents</p>
+<ol>
+<li><a href="#one">One</a></li>
+</ol>
+</nav>
+<h2 id="one">One</h2>
+[/code]
+
+h3. Inline formatting in the title {#toc-title-formatting}
+[code om]
+[toc *Contents*]
+
+h2. One
+[/code]
+[code html]
+<nav class="toc" aria-labelledby="toc-1">
+<p class="toc-title" id="toc-1"><strong>Contents</strong></p>
+<ol>
+<li><a href="#one">One</a></li>
+</ol>
+</nav>
+<h2 id="one">One</h2>
+[/code]
+
+h3. A first word with letters is a title, not a range {#toc-title-not-range}
+[code om]
+[toc 2-hour guide]
+
+h2. One
+[/code]
+[code html]
+<nav class="toc" aria-labelledby="toc-1">
+<p class="toc-title" id="toc-1">2-hour guide</p>
+<ol>
+<li><a href="#one">One</a></li>
+</ol>
+</nav>
+<h2 id="one">One</h2>
+[/code]
+
+h2. Matching Headings
+
+h3. No headings, with a title {#toc-empty-titled}
+[code om]
+[toc Contents]
+
+Just text.
+[/code]
+[code html]
+<nav class="toc" aria-labelledby="toc-1">
+<p class="toc-title" id="toc-1">Contents</p>
+</nav>
+<p>Just text.</p>
+[/code]
+
+h3. No headings, without a title {#toc-empty-untitled}
+[code om]
+[toc]
+
+Just text.
+[/code]
+[code html]
+<nav class="toc"></nav>
+<p>Just text.</p>
+[/code]
+
+h3. No heading in the range {#toc-empty-range}
+[code om]
+[toc 3-4]
+
+h2. Only level two
+[/code]
+[code html]
+<nav class="toc"></nav>
+<h2 id="only-level-two">Only level two</h2>
+[/code]
+
+h3. Headings inside an expandable block count {#toc-inside-more}
+[code om]
+[toc]
+
+[more Open]
+h2. Hidden
+[/more]
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#hidden">Hidden</a></li>
+</ol>
+</nav>
+<details>
+<summary>Open</summary>
+<h2 id="hidden">Hidden</h2>
+</details>
+[/code]
+
+h2. Hierarchy
+
+h3. Skipped levels do not create empty items {#toc-skipped-levels}
+[code om]
+[toc]
+
+h2. A
+h4. B
+h2. C
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#a">A</a>
+<ol>
+<li><a href="#b">B</a></li>
+</ol>
+</li>
+<li><a href="#c">C</a></li>
+</ol>
+</nav>
+<h2 id="a">A</h2>
+<h4 id="b">B</h4>
+<h2 id="c">C</h2>
+[/code]
+
+h3. A deeper first heading stays at the top level {#toc-deeper-first}
+[code om]
+[toc]
+
+h3. A
+h2. B
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#a">A</a></li>
+<li><a href="#b">B</a></li>
+</ol>
+</nav>
+<h3 id="a">A</h3>
+<h2 id="b">B</h2>
+[/code]
+
+h2. Entry Text
+
+h3. Inline formatting is kept {#toc-formatting}
+[code om]
+[toc]
+
+h2. Using *bold* text
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#using-bold-text">Using <strong>bold</strong> text</a></li>
+</ol>
+</nav>
+<h2 id="using-bold-text">Using <strong>bold</strong> text</h2>
+[/code]
+
+h3. Links are reduced to their text {#toc-link-text}
+[code om]
+[toc]
+
+h2. About [OireMark]:https://example.com
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#about-oiremark">About OireMark</a></li>
+</ol>
+</nav>
+<h2 id="about-oiremark">About <a href="https://example.com">OireMark</a></h2>
+[/code]
+
+h2. Errors
+
+h3. Reversed range {#toc-range-reversed}
+[code om]
+[toc 4-2]
+[/code]
+[code error]
+invalid-toc-range 1
+[/code]
+
+h3. Level zero {#toc-range-zero}
+[code om]
+[toc 0-3]
+[/code]
+[code error]
+invalid-toc-range 1
+[/code]
+
+h3. Level seven {#toc-range-seven}
+[code om]
+[toc 2-7 Contents]
+[/code]
+[code error]
+invalid-toc-range 1
+[/code]
+
+h3. Table of contents mid-line {#toc-mid-line}
+[code om]
+See [toc]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Not allowed in the standard profile {#toc-profile-standard}
+; profile
+: standard
+[code om]
+[toc]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]

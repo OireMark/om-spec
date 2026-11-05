@@ -1,0 +1,3 @@
+# Test inputs must keep their exact bytes: LF line endings, no conversion.
+*.om text eol=lf
+*.md text eol=lf

@@ -1,0 +1,64 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Horizontal Rule
+[/meta]
+
+h1. Horizontal Rule
+
+Tests for Section 19 of the specification.
+
+h3. Three hyphens {#hr-three}
+[code om]
+---
+[/code]
+[code html]
+<hr>
+[/code]
+
+h3. More than three hyphens {#hr-many}
+[code om]
+----------
+[/code]
+[code html]
+<hr>
+[/code]
+
+h3. Between paragraphs {#hr-between-paragraphs}
+[code om]
+Before.
+
+---
+
+After.
+[/code]
+[code html]
+<p>Before.</p>
+<hr>
+<p>After.</p>
+[/code]
+
+h3. Indentation is ignored {#hr-indented}
+[code om]
+   ---
+[/code]
+[code html]
+<hr>
+[/code]
+
+h3. Escaped hyphens are text {#hr-escaped}
+[code om]
+\---
+[/code]
+[code html]
+<p>---</p>
+[/code]
+
+h3. Not allowed in the inline profile {#hr-profile-inline}
+; profile
+: inline
+[code om]
+---
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]

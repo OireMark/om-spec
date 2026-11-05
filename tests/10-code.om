@@ -1,0 +1,215 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Code Blocks
+[/meta]
+
+h1. Code Blocks
+
+Tests for Section 10 of the specification.
+
+h2. Bracket Form
+
+h3. Bracket form with language {#code-bracket-language}
+```om
+[code python]
+def hello():
+    print("Hello, world!")
+[/code]
+```
+[code html]
+<pre><code class="language-python">def hello():
+    print("Hello, world!")
+</code></pre>
+[/code]
+
+h3. Bracket form without language {#code-bracket-plain}
+```om
+[code]
+plain text
+[/code]
+```
+[code html]
+<pre><code>plain text
+</code></pre>
+[/code]
+
+h3. Content is literal {#code-bracket-literal}
+```om
+[code]
+*not bold* \[not escaped\] <b>not html</b>
+h2. Not a heading
+[/code]
+```
+[code html]
+<pre><code>*not bold* \[not escaped\] &lt;b&gt;not html&lt;/b&gt;
+h2. Not a heading
+</code></pre>
+[/code]
+
+h3. Indentation and blank lines are preserved {#code-bracket-whitespace}
+```om
+[code]
+first
+
+    indented
+[/code]
+```
+[code html]
+<pre><code>first
+
+    indented
+</code></pre>
+[/code]
+
+h3. A closing tag in the middle of a line is content {#code-bracket-close-mid-line}
+```om
+[code]
+x [/code] y
+[/code]
+```
+[code html]
+<pre><code>x [/code] y
+</code></pre>
+[/code]
+
+h3. Empty code block {#code-bracket-empty}
+```om
+[code]
+[/code]
+```
+[code html]
+<pre><code></code></pre>
+[/code]
+
+h3. An indented closing tag closes the block {#code-bracket-indented-close}
+```om
+[code]
+x
+    [/code]
+```
+[code html]
+<pre><code>x
+</code></pre>
+[/code]
+
+h3. Unclosed bracket form {#code-bracket-unclosed}
+[code om]
+[code]
+never closed
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h2. Fenced Form
+
+h3. Fenced form with language {#code-fenced-language}
+[code om]
+```python
+def hello():
+    print("Hello, world!")
+```
+[/code]
+[code html]
+<pre><code class="language-python">def hello():
+    print("Hello, world!")
+</code></pre>
+[/code]
+
+h3. Fenced form without language {#code-fenced-plain}
+[code om]
+```
+plain text
+```
+[/code]
+[code html]
+<pre><code>plain text
+</code></pre>
+[/code]
+
+h3. A longer fence can contain a shorter one {#code-fenced-nested}
+[code om]
+````
+```
+This fence is part of the content.
+```
+````
+[/code]
+[code html]
+<pre><code>```
+This fence is part of the content.
+```
+</code></pre>
+[/code]
+
+h3. The closing fence may be longer than the opening one {#code-fenced-longer-close}
+[code om]
+```
+x
+`````
+[/code]
+[code html]
+<pre><code>x
+</code></pre>
+[/code]
+
+h3. A backtick line with text after it does not close the fence {#code-fenced-info-not-closing}
+[code om]
+```
+```python
+```
+[/code]
+[code html]
+<pre><code>```python
+</code></pre>
+[/code]
+
+h3. Unclosed fence {#code-fenced-unclosed}
+[code om]
+Text.
+
+```
+never closed
+[/code]
+[code error]
+unclosed-block 3
+[/code]
+
+h3. A shorter fence does not close a longer one {#code-fenced-shorter-not-closing}
+[code om]
+````
+x
+```
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h3. The fenced form shows a literal closing tag {#code-fenced-literal-close-tag}
+````om
+```
+[code]
+x
+[/code]
+```
+````
+```html
+<pre><code>[code]
+x
+[/code]
+</code></pre>
+```
+
+h2. Profiles
+
+h3. Code blocks are not allowed in the inline profile {#code-profile-inline}
+; profile
+: inline
+```om
+[code]
+x
+[/code]
+```
+[code error]
+feature-not-in-profile 1
+[/code]

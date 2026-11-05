@@ -1,0 +1,261 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Parser Profiles
+[/meta]
+
+h1. Parser Profiles
+
+Tests for Section 23 of the specification.
+
+h2. Inline Profile
+
+h3. Inline formatting without a paragraph {#profiles-inline-formatting}
+; profile
+: inline
+[code om]
+*bold* and _italic_
+[/code]
+[code html]
+<strong>bold</strong> and <em>italic</em>
+[/code]
+
+h3. Links, escapes and language spans {#profiles-inline-links}
+; profile
+: inline
+[code om]
+[Visit]:www.example.com, \*literal\*, [lang fr]bonjour[/lang]
+[/code]
+[code html]
+<a href="https://www.example.com">Visit</a>, *literal*, <span lang="fr">bonjour</span>
+[/code]
+
+h3. A newline is an error on the line after the break {#profiles-inline-newline}
+; profile
+: inline
+[code om]
+One
+Two
+[/code]
+[code error]
+feature-not-in-profile 2
+[/code]
+
+h3. Lists are not allowed {#profiles-inline-list}
+; profile
+: inline
+[code om]
+* item
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Headings are not allowed {#profiles-inline-heading}
+; profile
+: inline
+[code om]
+h2. Title
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Short form quotes are not allowed {#profiles-inline-short-quote}
+; profile
+: inline
+[code om]
+> quoted
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h2. Basic Profile
+
+h3. Everything the basic profile allows {#profiles-basic-allowed}
+; profile
+: basic
+```om
+Para *one*.
+
+* item
+
+[code]
+x
+[/code]
+
+[quote]
+Quoted.
+[/quote]
+
+> Short.
+
+---
+```
+[code html]
+<p>Para <strong>one</strong>.</p>
+<ul>
+<li>item</li>
+</ul>
+<pre><code>x
+</code></pre>
+<blockquote>
+<p>Quoted.</p>
+</blockquote>
+<blockquote>
+<p>Short.</p>
+</blockquote>
+<hr>
+[/code]
+
+h3. Tables are not allowed {#profiles-basic-table}
+; profile
+: basic
+[code om]
+| a | b |
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Definition lists are not allowed {#profiles-basic-definitions}
+; profile
+: basic
+[code om]
+; Term
+: Definition
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Language blocks are not allowed {#profiles-basic-lang-block}
+; profile
+: basic
+[code om]
+[lang fr]
+Bonjour.
+[/lang]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Footnote references are not allowed {#profiles-basic-fn-ref}
+; profile
+: basic
+[code om]
+A claim[fn1].
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Language spans are allowed {#profiles-basic-lang-span}
+; profile
+: basic
+[code om]
+Say [lang fr]bonjour[/lang].
+[/code]
+[code html]
+<p>Say <span lang="fr">bonjour</span>.</p>
+[/code]
+
+h2. Standard Profile
+
+h3. Everything the standard profile adds {#profiles-standard-allowed}
+; profile
+: standard
+[code om]
+h2. Title
+
+|| A ||
+| 1 |
+
+[note]
+Text.
+[/note]
+
+; Term
+: Definition
+
+[more Open]
+Hidden.
+[/more]
+
+[comment]
+Gone.
+[/comment]
+
+[lang fr]
+Bonjour.
+[/lang]
+[/code]
+[code html]
+<h2 id="title">Title</h2>
+<table>
+<thead>
+<tr><th scope="col">A</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td></tr>
+</tbody>
+</table>
+<div role="note" class="note">
+<p>Text.</p>
+</div>
+<dl>
+<dt>Term</dt>
+<dd>Definition</dd>
+</dl>
+<details>
+<summary>Open</summary>
+<p>Hidden.</p>
+</details>
+<div lang="fr">
+<p>Bonjour.</p>
+</div>
+[/code]
+
+h3. Footnote references are not allowed {#profiles-standard-fn-ref}
+; profile
+: standard
+[code om]
+A claim[fn1].
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Footnote blocks are not allowed {#profiles-standard-fn}
+; profile
+: standard
+[code om]
+[fn]
+1. Note.
+[/fn]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h2. Full Profile
+
+h3. Full is the default {#profiles-full-default}
+[code om]
+[meta]
+lang: en
+[/meta]
+
+[toc]
+
+h2. One
+[/code]
+[code html]
+<nav class="toc">
+<ol>
+<li><a href="#one">One</a></li>
+</ol>
+</nav>
+<h2 id="one">One</h2>
+[/code]

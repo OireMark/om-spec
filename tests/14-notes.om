@@ -1,0 +1,289 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Notes
+[/meta]
+
+h1. Notes
+
+Tests for Section 14 of the specification.
+
+h2. Titles
+
+h3. Note without a title {#notes-untitled}
+[code om]
+[note]
+General informational note.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note">
+<p>General informational note.</p>
+</div>
+[/code]
+
+h3. Note with a title {#notes-titled}
+[code om]
+[note Mind the gap]
+Doors open on the left.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note" aria-labelledby="note-1">
+<p class="note-title" id="note-1">Mind the gap</p>
+<p>Doors open on the left.</p>
+</div>
+[/code]
+
+h3. There are no note types {#notes-no-types}
+[code om]
+[note warning]
+Text.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note" aria-labelledby="note-1">
+<p class="note-title" id="note-1">warning</p>
+<p>Text.</p>
+</div>
+[/code]
+
+h3. Inline formatting in the title {#notes-title-formatting}
+[code om]
+[note *Important* steps]
+Text.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note" aria-labelledby="note-1">
+<p class="note-title" id="note-1"><strong>Important</strong> steps</p>
+<p>Text.</p>
+</div>
+[/code]
+
+h2. IDs
+
+h3. Titled notes are numbered in order {#notes-ids-sequence}
+[code om]
+[note First]
+A.
+[/note]
+
+[note Second]
+B.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note" aria-labelledby="note-1">
+<p class="note-title" id="note-1">First</p>
+<p>A.</p>
+</div>
+<div role="note" class="note" aria-labelledby="note-2">
+<p class="note-title" id="note-2">Second</p>
+<p>B.</p>
+</div>
+[/code]
+
+h3. Untitled notes are not numbered {#notes-ids-untitled-skipped}
+[code om]
+[note]
+A.
+[/note]
+
+[note Titled]
+B.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note">
+<p>A.</p>
+</div>
+<div role="note" class="note" aria-labelledby="note-1">
+<p class="note-title" id="note-1">Titled</p>
+<p>B.</p>
+</div>
+[/code]
+
+h3. Note ID after a heading with the same slug {#notes-ids-after-heading}
+[code om]
+h2. Note 1
+
+[note Title]
+Text.
+[/note]
+[/code]
+[code html]
+<h2 id="note-1">Note 1</h2>
+<div role="note" class="note" aria-labelledby="note-1-2">
+<p class="note-title" id="note-1-2">Title</p>
+<p>Text.</p>
+</div>
+[/code]
+
+h3. Heading slug after a note with the same ID {#notes-ids-before-heading}
+[code om]
+[note Title]
+Text.
+[/note]
+
+h2. Note 1
+[/code]
+[code html]
+<div role="note" class="note" aria-labelledby="note-1">
+<p class="note-title" id="note-1">Title</p>
+<p>Text.</p>
+</div>
+<h2 id="note-1-2">Note 1</h2>
+[/code]
+
+h3. Note ID after an identical custom heading ID {#notes-ids-after-custom}
+[code om]
+h2. Intro {#note-1}
+
+[note Title]
+Text.
+[/note]
+[/code]
+[code html]
+<h2 id="note-1">Intro</h2>
+<div role="note" class="note" aria-labelledby="note-1-2">
+<p class="note-title" id="note-1-2">Title</p>
+<p>Text.</p>
+</div>
+[/code]
+
+h2. Content
+
+h3. Paragraphs and line breaks {#notes-paragraphs}
+[code om]
+[note]
+Line one.
+Line two.
+
+Second paragraph.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note">
+<p>Line one.<br>
+Line two.</p>
+<p>Second paragraph.</p>
+</div>
+[/code]
+
+h3. Lists are allowed {#notes-list}
+[code om]
+[note]
+* One
+* Two
+[/note]
+[/code]
+[code html]
+<div role="note" class="note">
+<ul>
+<li>One</li>
+<li>Two</li>
+</ul>
+</div>
+[/code]
+
+h3. Empty note {#notes-empty}
+[code om]
+[note]
+[/note]
+[/code]
+[code html]
+<div role="note" class="note"></div>
+[/code]
+
+h3. Closing tag on the opening line {#notes-close-same-line}
+[code om]
+[note][/note]
+[/note]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Closing tag after text {#notes-close-after-text}
+[code om]
+[note]
+Text.[/note]
+[/note]
+[/code]
+[code error]
+block-tag-mid-line 2
+[/code]
+
+h3. Comments are allowed inside a note {#notes-comment}
+[code om]
+[note]
+[comment]
+Hidden.
+[/comment]
+Text.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note">
+<p>Text.</p>
+</div>
+[/code]
+
+h3. Empty titled note {#notes-empty-titled}
+[code om]
+[note Title]
+[/note]
+[/code]
+[code html]
+<div role="note" class="note" aria-labelledby="note-1">
+<p class="note-title" id="note-1">Title</p>
+</div>
+[/code]
+
+h3. Nested notes are an error {#notes-nested}
+[code om]
+[note]
+[note]
+Nested note.
+[/note]
+[/note]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Code blocks are not allowed {#notes-code}
+```om
+[note]
+[code]
+x
+[/code]
+[/note]
+```
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Tables are not allowed {#notes-table}
+[code om]
+[note]
+| a |
+[/note]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h2. Profiles
+
+h3. Not allowed in the basic profile {#notes-profile-basic}
+; profile
+: basic
+[code om]
+[note]
+Text.
+[/note]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]

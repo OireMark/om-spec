@@ -1,0 +1,378 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Footnotes
+[/meta]
+
+h1. Footnotes
+
+Tests for Section 16 of the specification.
+
+h2. References and Block
+
+h3. Single footnote {#footnotes-basic}
+[code om]
+A claim[fn1].
+
+[fn]
+1. The source.
+[/fn]
+[/code]
+[code html]
+<p>A claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">The source. <a href="#fnref1" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. Repeated reference gets its own ID, back link goes to the first {#footnotes-repeated}
+[code om]
+Some claim[fn1] and another[fn2] and repeated[fn1].
+
+[fn]
+1. First footnote explanation.
+2. Second footnote explanation.
+[/fn]
+[/code]
+[code html]
+<p>Some claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup> and another<sup><a href="#fn2" id="fnref2" role="doc-noteref">2</a></sup> and repeated<sup><a href="#fn1" id="fnref1-2" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">First footnote explanation. <a href="#fnref1" role="doc-backlink">↩</a></li>
+    <li id="fn2">Second footnote explanation. <a href="#fnref2" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. References may appear out of order {#footnotes-out-of-order}
+[code om]
+First[fn2] then[fn1].
+
+[fn]
+1. One.
+2. Two.
+[/fn]
+[/code]
+[code html]
+<p>First<sup><a href="#fn2" id="fnref2" role="doc-noteref">2</a></sup> then<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">One. <a href="#fnref1" role="doc-backlink">↩</a></li>
+    <li id="fn2">Two. <a href="#fnref2" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. Definitions are output in label order {#footnotes-label-order}
+[code om]
+First[fn1] then[fn2].
+
+[fn]
+2. Two.
+1. One.
+[/fn]
+[/code]
+[code html]
+<p>First<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup> then<sup><a href="#fn2" id="fnref2" role="doc-noteref">2</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">One. <a href="#fnref1" role="doc-backlink">↩</a></li>
+    <li id="fn2">Two. <a href="#fnref2" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. A gap in labels gets a value attribute {#footnotes-label-gap}
+[code om]
+First[fn1] then[fn3].
+
+[fn]
+1. One.
+3. Three.
+[/fn]
+[/code]
+[code html]
+<p>First<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup> then<sup><a href="#fn3" id="fnref3" role="doc-noteref">3</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">One. <a href="#fnref1" role="doc-backlink">↩</a></li>
+    <li id="fn3" value="3">Three. <a href="#fnref3" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. Footnote IDs are reserved before heading IDs {#footnotes-id-reserved}
+[code om]
+h2. Fn1
+
+A claim[fn1].
+
+[fn]
+1. The source.
+[/fn]
+[/code]
+[code html]
+<h2 id="fn1-2">Fn1</h2>
+<p>A claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">The source. <a href="#fnref1" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. Blank lines between footnotes are allowed {#footnotes-blank-lines}
+[code om]
+First[fn1] then[fn2].
+
+[fn]
+1. One.
+
+2. Two.
+[/fn]
+[/code]
+[code html]
+<p>First<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup> then<sup><a href="#fn2" id="fnref2" role="doc-noteref">2</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">One. <a href="#fnref1" role="doc-backlink">↩</a></li>
+    <li id="fn2">Two. <a href="#fnref2" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. A line that is not "N. text" is an error {#footnotes-invalid-line}
+[code om]
+A claim[fn1].
+
+[fn]
+1. The source.
+More about the source.
+[/fn]
+[/code]
+[code error]
+invalid-nesting 5
+[/code]
+
+h3. A # marker in the footnote block is an error {#footnotes-hash-marker}
+[code om]
+A claim[fn1].
+
+[fn]
+# The source.
+[/fn]
+[/code]
+[code error]
+invalid-nesting 4
+[/code]
+
+h3. Footnote content with formatting and a link {#footnotes-formatted-content}
+[code om]
+Details[fn1].
+
+[fn]
+1. See the *official documentation* at [example.com]:https://example.com for details.
+[/fn]
+[/code]
+[code html]
+<p>Details<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">See the <strong>official documentation</strong> at <a href="https://example.com">example.com</a> for details. <a href="#fnref1" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. Footnote content with code and emphasis {#footnotes-code-content}
+[code om]
+Details[fn1].
+
+[fn]
+1. This includes `code samples` and _emphasized text_.
+[/fn]
+[/code]
+[code html]
+<p>Details<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">This includes <code>code samples</code> and <em>emphasized text</em>. <a href="#fnref1" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h2. Back Link
+
+h3. Configured back-link symbol {#footnotes-backlink-option}
+; backlink
+: ↑
+[code om]
+A claim[fn1].
+
+[fn]
+1. The source.
+[/fn]
+[/code]
+[code html]
+<p>A claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">The source. <a href="#fnref1" role="doc-backlink">↑</a></li>
+  </ol>
+</section>
+[/code]
+
+h2. Problems That Are Warnings
+
+h3. Reference without a definition renders literally {#footnotes-undefined}
+[code om]
+Claim[fn1] and[fn2].
+
+[fn]
+1. Source.
+[/fn]
+[/code]
+[code html]
+<p>Claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup> and[fn2].</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">Source. <a href="#fnref1" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+[code warnings]
+footnote-undefined 1
+[/code]
+
+h3. Reference with no footnote block at all {#footnotes-undefined-no-block}
+[code om]
+A claim[fn1].
+[/code]
+[code html]
+<p>A claim[fn1].</p>
+[/code]
+[code warnings]
+footnote-undefined 1
+[/code]
+
+h3. Unused definition renders without a back link {#footnotes-unused}
+[code om]
+A claim[fn1].
+
+[fn]
+1. The source.
+2. Never cited.
+[/fn]
+[/code]
+[code html]
+<p>A claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">The source. <a href="#fnref1" role="doc-backlink">↩</a></li>
+    <li id="fn2">Never cited.</li>
+  </ol>
+</section>
+[/code]
+[code warnings]
+footnote-unused 5
+[/code]
+
+h3. Duplicate definition: the last one wins {#footnotes-duplicate}
+[code om]
+Claim[fn1].
+
+[fn]
+1. Old text.
+1. New text.
+[/fn]
+[/code]
+[code html]
+<p>Claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">New text. <a href="#fnref1" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+[code warnings]
+footnote-duplicate 5
+[/code]
+
+h2. Placement
+
+h3. A comment may follow the footnote block {#footnotes-comment-after}
+[code om]
+A claim[fn1].
+
+[fn]
+1. The source.
+[/fn]
+
+[comment]
+Reviewed.
+[/comment]
+[/code]
+[code html]
+<p>A claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">The source. <a href="#fnref1" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. Content after the footnote block is an error {#footnotes-content-after}
+[code om]
+A claim[fn1].
+
+[fn]
+1. The source.
+[/fn]
+
+More text.
+[/code]
+[code error]
+footnote-block-misplaced 7
+[/code]
+
+h3. A second footnote block is an error {#footnotes-second-block}
+[code om]
+A claim[fn1] and another[fn2].
+
+[fn]
+1. The source.
+[/fn]
+
+[fn]
+2. Another source.
+[/fn]
+[/code]
+[code error]
+footnote-block-misplaced 7
+[/code]
+
+h2. Profiles
+
+h3. A reference is an error in the standard profile {#footnotes-profile-standard-reference}
+; profile
+: standard
+[code om]
+Intro.
+
+A claim[fn1].
+[/code]
+[code error]
+feature-not-in-profile 3
+[/code]
+
+h3. Footnotes are not allowed in the standard profile {#footnotes-profile-standard}
+; profile
+: standard
+[code om]
+[fn]
+1. The source.
+[/fn]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]

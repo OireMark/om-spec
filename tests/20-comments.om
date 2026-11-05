@@ -1,0 +1,141 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Comments
+[/meta]
+
+h1. Comments
+
+Tests for Section 20 of the specification.
+
+h3. Comments are removed {#comments-removed}
+[code om]
+Before.
+
+[comment]
+This content will not appear in output.
+Can span multiple lines.
+[/comment]
+
+After.
+[/code]
+[code html]
+<p>Before.</p>
+<p>After.</p>
+[/code]
+
+h3. Markup inside a comment is ignored {#comments-markup-ignored}
+[code om]
+[comment]
+[note]
+*not parsed*
+[/comment]
+[/code]
+[code html]
+[/code]
+
+h3. A comment between paragraph lines keeps one paragraph {#comments-inside-paragraph}
+[code om]
+Line one.
+[comment]
+Hidden.
+[/comment]
+Line two.
+[/code]
+[code html]
+<p>Line one.<br>
+Line two.</p>
+[/code]
+
+h3. Comments are allowed inside containers {#comments-in-containers}
+[code om]
+[quote]
+[comment]
+Hidden.
+[/comment]
+Quoted.
+[/quote]
+[/code]
+[code html]
+<blockquote>
+<p>Quoted.</p>
+</blockquote>
+[/code]
+
+h3. A comment between list items {#comments-in-list}
+[code om]
+* One
+[comment]
+Hidden.
+[/comment]
+* Two
+[/code]
+[code html]
+<ul>
+<li>One</li>
+<li>Two</li>
+</ul>
+[/code]
+
+h3. Unclosed comment {#comments-unclosed}
+[code om]
+[comment]
+Never closed.
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h3. Comment mid-line {#comments-mid-line}
+[code om]
+Text [comment]hidden[/comment]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Allowed in the basic profile {#comments-profile-basic}
+; profile
+: basic
+[code om]
+Shown.
+
+[comment]
+Hidden.
+[/comment]
+[/code]
+[code html]
+<p>Shown.</p>
+[/code]
+
+h3. Not allowed in the inline profile {#comments-profile-inline}
+; profile
+: inline
+[code om]
+[comment]
+Hidden.
+[/comment]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. A closing tag after text is comment content {#comments-close-after-text}
+[code om]
+[comment]
+Hidden.[/comment]
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h3. A closing tag after text does not end the comment {#comments-close-after-text-continues}
+[code om]
+[comment]
+Hidden.[/comment]
+Still hidden.
+[/comment]
+Shown.
+[/code]
+[code html]
+<p>Shown.</p>
+[/code]

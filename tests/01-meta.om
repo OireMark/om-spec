@@ -1,0 +1,220 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Document Metadata
+[/meta]
+
+h1. Document Metadata
+
+Tests for Section 1 of the specification.
+
+h2. Output
+
+h3. Meta alone produces no fragment output {#meta-only}
+[code om]
+[meta]
+lang: uk
+title: My Document
+author: André Polykanine
+[/meta]
+[/code]
+[code html]
+[/code]
+
+h3. Content after meta {#meta-then-paragraph}
+[code om]
+[meta]
+lang: en
+[/meta]
+
+Hello.
+[/code]
+[code html]
+<p>Hello.</p>
+[/code]
+
+h3. Unknown keys are ignored {#meta-unknown-key}
+[code om]
+[meta]
+color: blue
+[/meta]
+[/code]
+[code html]
+[/code]
+
+h2. Placement
+
+h3. Meta after content is an error {#meta-after-content}
+[code om]
+Hello.
+
+[meta]
+lang: en
+[/meta]
+[/code]
+[code error]
+meta-not-first 3
+[/code]
+
+h3. A second meta block is an error {#meta-twice}
+[code om]
+[meta]
+lang: en
+[/meta]
+[meta]
+title: Again
+[/meta]
+[/code]
+[code error]
+meta-not-first 4
+[/code]
+
+h3. Unclosed meta {#meta-unclosed}
+[code om]
+[meta]
+lang: en
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h3. Tag casing {#meta-case-sensitive}
+[code om]
+[Meta]
+lang: en
+[/Meta]
+[/code]
+[code html]
+<p>[Meta]<br>
+lang: en<br>
+[/Meta]</p>
+[/code]
+
+h3. Blank lines may precede meta {#meta-after-blank-lines}
+[code om]
+
+
+[meta]
+lang: en
+[/meta]
+
+Hello.
+[/code]
+[code html]
+<p>Hello.</p>
+[/code]
+
+h3. A comment may precede meta {#meta-after-comment}
+[code om]
+[comment]
+Draft notes.
+[/comment]
+[meta]
+lang: en
+[/meta]
+
+Hello.
+[/code]
+[code html]
+<p>Hello.</p>
+[/code]
+
+h3. Meta inside a container {#meta-inside-more}
+[code om]
+[more Details]
+[meta]
+lang: en
+[/meta]
+[/more]
+[/code]
+[code error]
+meta-not-first 2
+[/code]
+
+h2. Profiles
+
+h3. Meta is read in the standard profile {#meta-profile-standard}
+; profile
+: standard
+[code om]
+[meta]
+lang: en
+[/meta]
+[/code]
+[code html]
+[/code]
+
+h3. Meta is read in the basic profile {#meta-profile-basic}
+; profile
+: basic
+[code om]
+[meta]
+lang: en
+[/meta]
+
+Hello.
+[/code]
+[code html]
+<p>Hello.</p>
+[/code]
+
+h3. Meta is not allowed in the inline profile {#meta-profile-inline}
+; profile
+: inline
+[code om]
+[meta]
+lang: en
+[/meta]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Several errors on one line: the first in the error table wins {#meta-profile-inline-unclosed}
+; profile
+: inline
+[code om]
+[meta]
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h3. Meta can narrow the profile {#meta-profile-narrows}
+[code om]
+[meta]
+profile: basic
+[/meta]
+
+h2. Heading
+[/code]
+[code error]
+feature-not-in-profile 5
+[/code]
+
+h3. Meta selects a profile that allows its content {#meta-profile-selects}
+; profile
+: standard
+[code om]
+[meta]
+profile: standard
+[/meta]
+
+h2. Heading
+[/code]
+[code html]
+<h2 id="heading">Heading</h2>
+[/code]
+
+h3. The parser's profile wins over a wider document profile {#meta-profile-parser-wins}
+; profile
+: basic
+[code om]
+[meta]
+profile: full
+[/meta]
+
+h2. Heading
+[/code]
+[code error]
+feature-not-in-profile 5
+[/code]

@@ -1,0 +1,287 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Headings
+[/meta]
+
+h1. Headings
+
+Tests for Section 3 of the specification.
+
+h2. Levels
+
+h3. All six levels {#headings-levels}
+[code om]
+h1. One
+h2. Two
+h3. Three
+h4. Four
+h5. Five
+h6. Six
+[/code]
+[code html]
+<h1 id="one">One</h1>
+<h2 id="two">Two</h2>
+<h3 id="three">Three</h3>
+<h4 id="four">Four</h4>
+<h5 id="five">Five</h5>
+<h6 id="six">Six</h6>
+[/code]
+
+h3. There is no level seven {#headings-no-h7}
+[code om]
+h7. Seven
+[/code]
+[code html]
+<p>h7. Seven</p>
+[/code]
+
+h3. Markers are case-sensitive {#headings-case-sensitive}
+[code om]
+H2. Not a heading
+[/code]
+[code html]
+<p>H2. Not a heading</p>
+[/code]
+
+h3. A space is required after the marker {#headings-missing-space}
+The spec asks for a SHOULD warning here (heading-missing-space), which tests don't assert.
+[code om]
+h2.Title
+[/code]
+[code html]
+<p>h2.Title</p>
+[/code]
+
+h3. A heading line ends the paragraph above it {#headings-after-paragraph}
+[code om]
+Some text.
+h2. Heading
+[/code]
+[code html]
+<p>Some text.</p>
+<h2 id="heading">Heading</h2>
+[/code]
+
+h3. Mid-line marker is text {#headings-mid-line}
+[code om]
+Text with h2. inside
+[/code]
+[code html]
+<p>Text with h2. inside</p>
+[/code]
+
+h3. Escaped marker is text {#headings-escaped}
+[code om]
+h2\. Not a heading
+[/code]
+[code html]
+<p>h2. Not a heading</p>
+[/code]
+
+h3. Indentation is ignored {#headings-indented}
+[code om]
+    h2. Indented
+[/code]
+[code html]
+<h2 id="indented">Indented</h2>
+[/code]
+
+h2. Custom IDs
+
+h3. Custom ID {#headings-custom-id}
+[code om]
+h2. My Section {#custom-id}
+[/code]
+[code html]
+<h2 id="custom-id">My Section</h2>
+[/code]
+
+h3. Duplicate custom IDs are an error {#headings-duplicate-custom-id}
+[code om]
+h2. First {#same}
+h2. Second {#same}
+[/code]
+[code error]
+duplicate-id 2
+[/code]
+
+h2. Generated IDs
+
+h3. Simple slug {#headings-slug-simple}
+[code om]
+h2. Hello World
+[/code]
+[code html]
+<h2 id="hello-world">Hello World</h2>
+[/code]
+
+h3. Letters in any script are kept {#headings-slug-cyrillic}
+[code om]
+h2. Огляд проєкту
+[/code]
+[code html]
+<h2 id="огляд-проєкту">Огляд проєкту</h2>
+[/code]
+
+h3. Punctuation is removed {#headings-slug-punctuation}
+[code om]
+h2. What's new? (2026)
+[/code]
+[code html]
+<h2 id="whats-new-2026">What's new? (2026)</h2>
+[/code]
+
+h3. Hyphen runs collapse and edges are trimmed {#headings-slug-hyphens}
+[code om]
+h2. Before / and / after /
+[/code]
+[code html]
+<h2 id="before-and-after">Before / and / after /</h2>
+[/code]
+
+h3. Empty slug falls back to "section" {#headings-slug-empty}
+[code om]
+h2. ???
+[/code]
+[code html]
+<h2 id="section">???</h2>
+[/code]
+
+h3. Formatting markers are stripped from the slug {#headings-slug-formatting}
+[code om]
+h2. Introduction to *OireMark*
+[/code]
+[code html]
+<h2 id="introduction-to-oiremark">Introduction to <strong>OireMark</strong></h2>
+[/code]
+
+h3. Code span text is kept in the slug {#headings-slug-code}
+[code om]
+h2. The `om` command
+[/code]
+[code html]
+<h2 id="the-om-command">The <code>om</code> command</h2>
+[/code]
+
+h3. Link text is kept, the URL is not {#headings-slug-link}
+[code om]
+h2. About [OireMark]:https://example.com
+[/code]
+[code html]
+<h2 id="about-oiremark">About <a href="https://example.com">OireMark</a></h2>
+[/code]
+
+h3. Duplicate generated IDs get a suffix {#headings-slug-duplicates}
+[code om]
+h2. Intro
+h2. Intro
+h2. Intro
+[/code]
+[code html]
+<h2 id="intro">Intro</h2>
+<h2 id="intro-2">Intro</h2>
+<h2 id="intro-3">Intro</h2>
+[/code]
+
+h3. A generated ID avoids an earlier custom ID {#headings-slug-after-custom}
+[code om]
+h2. Setup {#intro}
+h2. Intro
+[/code]
+[code html]
+<h2 id="intro">Setup</h2>
+<h2 id="intro-2">Intro</h2>
+[/code]
+
+h3. A later custom ID still wins {#headings-custom-reserved-first}
+Custom IDs are reserved for the whole document before any ID is generated.
+[code om]
+h2. Intro
+h2. Setup {#intro}
+[/code]
+[code html]
+<h2 id="intro-2">Intro</h2>
+<h2 id="intro">Setup</h2>
+[/code]
+
+h3. Generated IDs avoid footnote IDs {#headings-footnote-reserved}
+[code om]
+h2. Fn1
+Claim[fn1].
+
+[fn]
+1. Source.
+[/fn]
+[/code]
+[code html]
+<h2 id="fn1-2">Fn1</h2>
+<p>Claim<sup><a href="#fn1" id="fnref1" role="doc-noteref">1</a></sup>.</p>
+<section class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn1">Source. <a href="#fnref1" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+[/code]
+
+h3. Suffixes skip taken IDs {#headings-suffix-skips-taken}
+[code om]
+h2. Intro {#intro-2}
+h2. Intro
+h2. Intro
+[/code]
+[code html]
+<h2 id="intro-2">Intro</h2>
+<h2 id="intro">Intro</h2>
+<h2 id="intro-3">Intro</h2>
+[/code]
+
+h3. Heading text is normalized to NFC {#headings-slug-nfc}
+The input spells "й" as "и" plus a combining breve (U+0438 U+0306); the ID uses the single character U+0439.
+[code om]
+h2. Мій йой
+[/code]
+[code html]
+<h2 id="мій-йой">Мій йой</h2>
+[/code]
+
+h3. Lowercasing ignores the locale {#headings-slug-locale-independent}
+The default Unicode mapping turns "I" into "i" on every system, never the Turkish dotless "ı".
+[code om]
+h2. ISTANBUL
+[/code]
+[code html]
+<h2 id="istanbul">ISTANBUL</h2>
+[/code]
+
+h3. Combining marks are kept {#headings-slug-combining-marks}
+Devanagari vowel signs are combining marks (General Category M) and must stay in the ID.
+[code om]
+h2. हिन्दी
+[/code]
+[code html]
+<h2 id="हिन्दी">हिन्दी</h2>
+[/code]
+
+h2. Profiles
+
+h3. Headings are not allowed in the basic profile {#headings-profile-basic}
+; profile
+: basic
+[code om]
+Some text.
+
+h2. Heading
+[/code]
+[code error]
+feature-not-in-profile 3
+[/code]
+
+h3. Headings are allowed in the standard profile {#headings-profile-standard}
+; profile
+: standard
+[code om]
+h2. Heading
+[/code]
+[code html]
+<h2 id="heading">Heading</h2>
+[/code]

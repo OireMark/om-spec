@@ -1,0 +1,182 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Expandable Content
+[/meta]
+
+h1. Expandable Content
+
+Tests for Section 13 of the specification.
+
+h2. Basics
+
+h3. Expandable block {#more-basic}
+[code om]
+[more Click to expand]
+Hidden content revealed on click.
+[/more]
+[/code]
+[code html]
+<details>
+<summary>Click to expand</summary>
+<p>Hidden content revealed on click.</p>
+</details>
+[/code]
+
+h3. The title is required {#more-without-title}
+[code om]
+[more]
+Content.
+[/more]
+[/code]
+[code error]
+more-without-title 1
+[/code]
+
+h3. Inline formatting in the title {#more-title-formatting}
+[code om]
+[more *Bold* title]
+Text.
+[/more]
+[/code]
+[code html]
+<details>
+<summary><strong>Bold</strong> title</summary>
+<p>Text.</p>
+</details>
+[/code]
+
+h3. A link in the title is reduced to its text {#more-title-link}
+[code om]
+[more See [the docs]:https://example.com]
+Text.
+[/more]
+[/code]
+[code html]
+<details>
+<summary>See the docs</summary>
+<p>Text.</p>
+</details>
+[/code]
+
+h3. Empty expandable block {#more-empty}
+[code om]
+[more Title]
+[/more]
+[/code]
+[code html]
+<details>
+<summary>Title</summary>
+</details>
+[/code]
+
+h2. Content
+
+h3. Headings and lists are allowed {#more-heading-list}
+[code om]
+[more Details here]
+h3. Inside
+
+* a
+[/more]
+[/code]
+[code html]
+<details>
+<summary>Details here</summary>
+<h3 id="inside">Inside</h3>
+<ul>
+<li>a</li>
+</ul>
+</details>
+[/code]
+
+h3. Tables are allowed {#more-table}
+[code om]
+[more Data]
+|| A ||
+| 1 |
+[/more]
+[/code]
+[code html]
+<details>
+<summary>Data</summary>
+<table>
+<thead>
+<tr><th scope="col">A</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td></tr>
+</tbody>
+</table>
+</details>
+[/code]
+
+h3. Nested expandable blocks are allowed {#more-nested}
+[code om]
+[more Outer]
+[more Inner]
+Text.
+[/more]
+[/more]
+[/code]
+[code html]
+<details>
+<summary>Outer</summary>
+<details>
+<summary>Inner</summary>
+<p>Text.</p>
+</details>
+</details>
+[/code]
+
+h3. Notes are allowed {#more-note}
+[code om]
+[more Outer]
+[note]
+Text.
+[/note]
+[/more]
+[/code]
+[code html]
+<details>
+<summary>Outer</summary>
+<div role="note" class="note">
+<p>Text.</p>
+</div>
+</details>
+[/code]
+
+h3. A table of contents is not allowed {#more-toc}
+[code om]
+[more Outer]
+[toc]
+[/more]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. A footnote block is not allowed {#more-fn}
+[code om]
+[more Outer]
+[fn]
+1. Note.
+[/fn]
+[/more]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h2. Profiles
+
+h3. Not allowed in the basic profile {#more-profile-basic}
+; profile
+: basic
+[code om]
+[more Title]
+Text.
+[/more]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
