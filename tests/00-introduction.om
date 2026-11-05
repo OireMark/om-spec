@@ -1,0 +1,213 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Introduction
+[/meta]
+
+h1. Introduction
+
+Tests for the Introduction of the specification: character encoding, line endings, case sensitivity and blank lines.
+
+h2. Byte Order Mark
+
+h3. A leading BOM is stripped {#intro-bom-stripped}
+[code hex]
+EF BB BF 48 65 6C 6C 6F
+[/code]
+[code html]
+<p>Hello</p>
+[/code]
+
+h3. A BOM does not stop a heading from starting the first line {#intro-bom-heading}
+[code hex]
+EF BB BF 68 31 2E 20 54 69 74 6C 65
+[/code]
+[code html]
+<h1 id="title">Title</h1>
+[/code]
+
+h3. A document that is only a BOM is empty {#intro-bom-only}
+[code hex]
+EF BB BF
+[/code]
+[code html]
+[/code]
+
+h3. U+FEFF in the middle of a line is an ordinary character {#intro-feff-mid-line}
+[code hex]
+61 EF BB BF 62
+[/code]
+[code html]
+<p>a&#xFEFF;b</p>
+[/code]
+
+h3. U+FEFF at the start of a later line is an ordinary character {#intro-feff-later-line}
+[code hex]
+61 0A EF BB BF 62
+[/code]
+[code html]
+<p>a<br>&#xFEFF;b</p>
+[/code]
+
+h2. Invalid UTF-8
+
+h3. Invalid byte on the first line {#intro-invalid-utf8-line-1}
+[code hex]
+C3 28
+[/code]
+[code error]
+invalid-utf8 1
+[/code]
+
+h3. Invalid byte on a later line {#intro-invalid-utf8-line-2}
+[code hex]
+48 69 0A FF 0A
+[/code]
+[code error]
+invalid-utf8 2
+[/code]
+
+h3. Overlong encoding is invalid {#intro-invalid-utf8-overlong}
+[code hex]
+C0 AF
+[/code]
+[code error]
+invalid-utf8 1
+[/code]
+
+h3. Encoded surrogate is invalid {#intro-invalid-utf8-surrogate}
+[code hex]
+ED A0 80
+[/code]
+[code error]
+invalid-utf8 1
+[/code]
+
+h2. Line Endings
+
+h3. LF is a newline {#intro-lf}
+[code hex]
+61 0A 62
+[/code]
+[code html]
+<p>a<br>b</p>
+[/code]
+
+h3. CRLF is one newline, not two {#intro-crlf}
+[code hex]
+61 0D 0A 62
+[/code]
+[code html]
+<p>a<br>b</p>
+[/code]
+
+h3. CR alone is a newline {#intro-cr}
+[code hex]
+61 0D 62
+[/code]
+[code html]
+<p>a<br>b</p>
+[/code]
+
+h3. CRLF blank line separates paragraphs {#intro-crlf-paragraphs}
+[code hex]
+61 0D 0A 0D 0A 62
+[/code]
+[code html]
+<p>a</p>
+<p>b</p>
+[/code]
+
+h3. CR blank line separates paragraphs {#intro-cr-paragraphs}
+[code hex]
+61 0D 0D 62
+[/code]
+[code html]
+<p>a</p>
+<p>b</p>
+[/code]
+
+h2. Blank Lines
+
+h3. A line of spaces is a blank line {#intro-blank-spaces}
+[code hex]
+61 0A 20 20 0A 62
+[/code]
+[code html]
+<p>a</p>
+<p>b</p>
+[/code]
+
+h3. A line holding only a tab is a blank line {#intro-blank-tab}
+[code hex]
+61 0A 09 0A 62
+[/code]
+[code html]
+<p>a</p>
+<p>b</p>
+[/code]
+
+h2. Case Sensitivity
+
+h3. Capitalized tag is literal text {#intro-case-capitalized}
+[code om]
+[Note]
+Text
+[/Note]
+[/code]
+[code html]
+<p>[Note]<br>Text<br>[/Note]</p>
+[/code]
+
+h3. Uppercase tag is literal text {#intro-case-uppercase}
+[code om]
+[NOTE]
+Text
+[/NOTE]
+[/code]
+[code html]
+<p>[NOTE]<br>Text<br>[/NOTE]</p>
+[/code]
+
+h3. Uppercase closing tag does not close a block {#intro-case-closing}
+[code om]
+[note]
+Text
+[/NOTE]
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h2. Typography
+
+h3. Double hyphen stays as written {#intro-typography-dashes}
+[code om]
+Wait -- what?
+[/code]
+[code html]
+<p>Wait -- what?</p>
+[/code]
+
+h3. Three dots stay as written {#intro-typography-ellipsis}
+[code om]
+And so on...
+[/code]
+[code html]
+<p>And so on...</p>
+[/code]
+
+h3. Straight quotes stay straight {#intro-typography-quotes}
+[code om]
+"Quoted" and 'single' and it's
+[/code]
+[code html]
+<p>"Quoted" and 'single' and it's</p>
+[/code]
+
+h3. Typed typographic characters pass through {#intro-typography-typed}
+[code om]
+«Лапки» — і три крапки…
+[/code]
+[code html]
+<p>«Лапки» — і три крапки…</p>
+[/code]

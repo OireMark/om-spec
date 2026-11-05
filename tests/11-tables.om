@@ -1,0 +1,687 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Tables
+[/meta]
+
+h1. Tables
+
+Tests for Section 11 of the specification.
+
+h2. Header rows
+
+h3. Header row and body rows {#tables-basic}
+[code om]
+|| Name || Age || City ||
+| Alice | 30 | Paris |
+| Bob | 25 | London |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col">Name</th><th scope="col">Age</th><th scope="col">City</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Alice</td><td>30</td><td>Paris</td></tr>
+    <tr><td>Bob</td><td>25</td><td>London</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Table without a header row {#tables-no-header}
+[code om]
+| Alice | 30 |
+| Bob | 25 |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>Alice</td><td>30</td></tr>
+    <tr><td>Bob</td><td>25</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Header row only {#tables-header-only}
+[code om]
+|| A || B ||
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col">A</th><th scope="col">B</th></tr>
+  </thead>
+</table>
+[/code]
+
+h2. Rows
+
+h3. Trailing delimiter is optional {#tables-rows-no-trailing-delimiter}
+[code om]
+| a | b
+| c | d |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td>b</td></tr>
+    <tr><td>c</td><td>d</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Trailing double delimiter only closes the cell {#tables-rows-trailing-double}
+[code om]
+| a ||
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Double delimiter inside a row opens a header cell {#tables-rows-inner-double}
+[code om]
+| a || c |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><th scope="row">c</th></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. A table ends at the first line that is not a row {#tables-rows-end}
+[code om]
+| a | b |
+Text after the table.
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td>b</td></tr>
+  </tbody>
+</table>
+<p>Text after the table.</p>
+[/code]
+
+h3. A row ends a paragraph without a blank line {#tables-rows-interrupt-paragraph}
+[code om]
+Prices:
+| Tea | 3 |
+[/code]
+[code html]
+<p>Prices:</p>
+<table>
+  <tbody>
+    <tr><td>Tea</td><td>3</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Indented rows {#tables-rows-indented}
+[code om]
+  | a | b |
+  | c | d |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td>b</td></tr>
+    <tr><td>c</td><td>d</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h2. Row headers
+
+h3. Row headers below a header row {#tables-row-headers}
+[code om]
+|| Day || Opens || Closes ||
+|| Monday | 9:00 | 18:00 |
+|| Saturday | 10:00 | 14:00 |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col">Day</th><th scope="col">Opens</th><th scope="col">Closes</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">Monday</th><td>9:00</td><td>18:00</td></tr>
+    <tr><th scope="row">Saturday</th><td>10:00</td><td>14:00</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Mixed first row is a body row {#tables-mixed-first-row}
+[code om]
+|| Monday | 9:00 |
+|| Tuesday | 10:00 |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><th scope="row">Monday</th><td>9:00</td></tr>
+    <tr><th scope="row">Tuesday</th><td>10:00</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. All-header row that is not first is a row of row headers {#tables-header-cells-later-row}
+[code om]
+| a | b |
+|| c || d ||
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td>b</td></tr>
+    <tr><th scope="row">c</th><th scope="row">d</th></tr>
+  </tbody>
+</table>
+[/code]
+
+h2. Column alignment
+
+h3. Left, center and right {#tables-align-basic}
+[code om]
+||< Name ||>< Age ||> Salary ||
+| Alice | 30 | €50,000 |
+| Bob | 25 | €45,000 |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr>
+      <th scope="col" style="text-align: left">Name</th>
+      <th scope="col" style="text-align: center">Age</th>
+      <th scope="col" style="text-align: right">Salary</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Alice</td>
+      <td style="text-align: center">30</td>
+      <td style="text-align: right">€50,000</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Bob</td>
+      <td style="text-align: center">25</td>
+      <td style="text-align: right">€45,000</td>
+    </tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Justify {#tables-align-justify}
+[code om]
+||<> Text ||
+| Some words |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col" style="text-align: justify">Text</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="text-align: justify">Some words</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Only marked columns are aligned {#tables-align-partial}
+[code om]
+|| Item ||> Price ||
+| Tea | 3 |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col">Item</th><th scope="col" style="text-align: right">Price</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Tea</td><td style="text-align: right">3</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Alignment markers outside the header row are content {#tables-align-body-row}
+[code om]
+|| Day || Hours ||
+||> Monday | 9 to 18 |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col">Day</th><th scope="col">Hours</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">&gt; Monday</th><td>9 to 18</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Alignment applies to row headers {#tables-align-row-headers}
+[code om]
+||> Day || Hours ||
+|| Monday | 9 |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col" style="text-align: right">Day</th><th scope="col">Hours</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row" style="text-align: right">Monday</th><td>9</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Space before the marker makes it content {#tables-align-space}
+[code om]
+|| < 5 || Result ||
+| yes | small |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col">&lt; 5</th><th scope="col">Result</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>yes</td><td>small</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Escaped angle bracket is not an alignment marker {#tables-align-escaped}
+[code om]
+||\< 5 || Result ||
+| yes | small |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col">&lt; 5</th><th scope="col">Result</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>yes</td><td>small</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h2. Cell spans
+
+h3. Column span in a body row {#tables-span-colspan}
+[code om]
+| a | b | c |
+|{2} wide | d |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td>b</td><td>c</td></tr>
+    <tr><td colspan="2">wide</td><td>d</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Column span in the header row {#tables-span-header-colspan}
+[code om]
+||{2} Name || Age ||
+| First | Last | 30 |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col" colspan="2">Name</th><th scope="col">Age</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>First</td><td>Last</td><td>30</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Row span {#tables-span-rowspan}
+[code om]
+|{x2} tall | b |
+| c |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td rowspan="2">tall</td><td>b</td></tr>
+    <tr><td>c</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Row span in a later column {#tables-span-rowspan-later-column}
+[code om]
+| a |{x2} tall | c |
+| d | f |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td rowspan="2">tall</td><td>c</td></tr>
+    <tr><td>d</td><td>f</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Column and row span together {#tables-span-both}
+[code om]
+|{2x2} big | a |
+| b |
+| c | d | e |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td colspan="2" rowspan="2">big</td><td>a</td></tr>
+    <tr><td>b</td></tr>
+    <tr><td>c</td><td>d</td><td>e</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Row header spanning rows {#tables-span-row-header}
+[code om]
+|| Day || Shift || Hours ||
+||{x2} Monday | Morning | 4 |
+| Evening | 3 |
+|| Total |{2} 7 |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col">Day</th><th scope="col">Shift</th><th scope="col">Hours</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row" rowspan="2">Monday</th><td>Morning</td><td>4</td></tr>
+    <tr><td>Evening</td><td>3</td></tr>
+    <tr><th scope="row">Total</th><td colspan="2">7</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Span after an alignment marker {#tables-span-after-alignment}
+[code om]
+||><{2} Group || C ||
+|{2} both | c |
+[/code]
+[code html]
+<table>
+  <thead>
+    <tr><th scope="col" style="text-align: center" colspan="2">Group</th><th scope="col">C</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="text-align: center" colspan="2">both</td><td>c</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Row span reaching exactly the last row {#tables-span-rowspan-to-end}
+[code om]
+| a |{x3} tall |
+| b |
+| c |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td rowspan="3">tall</td></tr>
+    <tr><td>b</td></tr>
+    <tr><td>c</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Braces after whitespace are cell text {#tables-span-space}
+[code om]
+| {2} a | b |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>{2} a</td><td>b</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Zero span is an error {#tables-span-error-zero}
+[code om]
+| a | b |
+|{0} c | d |
+[/code]
+[code error]
+invalid-span 2
+[/code]
+
+h3. Uppercase separator is an error {#tables-span-error-uppercase}
+[code om]
+|{2X2} a | b |
+[/code]
+[code error]
+invalid-span 1
+[/code]
+
+h3. Words inside the braces are an error {#tables-span-error-words}
+[code om]
+|{wide} a | b |
+[/code]
+[code error]
+invalid-span 1
+[/code]
+
+h3. Row span in the header row is an error {#tables-span-error-header-rowspan}
+[code om]
+||{x2} A || B ||
+| a | b |
+[/code]
+[code error]
+invalid-span 1
+[/code]
+
+h3. Row span past the last row is an error {#tables-span-error-past-end}
+[code om]
+|{x3} tall | b |
+| c |
+[/code]
+[code error]
+invalid-span 1
+[/code]
+
+h2. Width rule
+
+h3. Row narrower than the first row {#tables-width-narrower}
+[code om]
+|| A || B ||
+| x |
+[/code]
+[code error]
+uneven-table-row 2
+[/code]
+
+h3. Row wider than the first row {#tables-width-wider}
+[code om]
+|| A || B ||
+| x | y | z |
+[/code]
+[code error]
+uneven-table-row 2
+[/code]
+
+h3. First row sets the width without a header {#tables-width-no-header}
+[code om]
+| a |
+| b | c |
+[/code]
+[code error]
+uneven-table-row 2
+[/code]
+
+h3. Column span counts toward the width {#tables-width-colspan-too-wide}
+[code om]
+| a | b |
+|{2} c | d |
+[/code]
+[code error]
+uneven-table-row 2
+[/code]
+
+h3. Column span in the first row sets the width {#tables-width-first-row-colspan}
+[code om]
+|{3} wide |
+| a | b |
+[/code]
+[code error]
+uneven-table-row 2
+[/code]
+
+h3. Slot filled from above counts toward the width {#tables-width-rowspan-too-wide}
+[code om]
+|{x2} tall | b |
+| c | d |
+[/code]
+[code error]
+uneven-table-row 2
+[/code]
+
+h3. Forgotten cell under a row span {#tables-width-rowspan-too-narrow}
+[code om]
+| a | b | c |
+|{x2} tall | d | e |
+| f |
+[/code]
+[code error]
+uneven-table-row 3
+[/code]
+
+h2. Whitespace and empty cells
+
+h3. Whitespace around content is trimmed {#tables-whitespace-trimmed}
+[code om]
+|     Alice     |30|
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>Alice</td><td>30</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Whitespace inside content is kept {#tables-whitespace-inner}
+[code om]
+| two  spaces | x |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>two  spaces</td><td>x</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Empty cell {#tables-empty-cell}
+[code om]
+| a | | c |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td></td><td>c</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Escaped space is a kept non-breaking space {#tables-escaped-space}
+[code om]
+| a | \ | c |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td>&nbsp;</td><td>c</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h2. Cell content
+
+h3. Inline formatting in cells {#tables-inline-formatting}
+[code om]
+| *bold* | _italic_ | [Docs]:https://example.com |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td><strong>bold</strong></td><td><em>italic</em></td><td><a href="https://example.com">Docs</a></td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Pipe inside a code span does not split the cell {#tables-pipe-in-code}
+[code om]
+| `a|b` | c |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td><code>a|b</code></td><td>c</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Escaped pipe {#tables-escaped-pipe}
+[code om]
+| a \| b | c |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a | b</td><td>c</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. List marker inside a cell is text {#tables-list-marker-text}
+[code om]
+| * item | x |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>* item</td><td>x</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h2. Profiles
+
+h3. Tables are not allowed in the basic profile {#tables-profile-basic}
+; profile
+: basic
+[code om]
+| a | b |
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Tables are allowed in the standard profile {#tables-profile-standard}
+; profile
+: standard
+[code om]
+| a | b |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td>b</td></tr>
+  </tbody>
+</table>
+[/code]

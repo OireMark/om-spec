@@ -1,0 +1,264 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Language Spans and Blocks
+[/meta]
+
+h1. Language Spans and Blocks
+
+Tests for Section 17 of the specification, and the inline versus block rules in Section 2.
+
+h2. Inline Spans
+
+h3. Span inside a sentence {#lang-span}
+[code om]
+Here is some [lang ru]текст на русском[/lang] in English.
+[/code]
+[code html]
+<p>Here is some <span lang="ru">текст на русском</span> in English.</p>
+[/code]
+
+h3. Span at the start of a line is still inline {#lang-span-line-start}
+[code om]
+[lang fr]Bonjour[/lang] says the sign.
+[/code]
+[code html]
+<p><span lang="fr">Bonjour</span> says the sign.</p>
+[/code]
+
+h3. Span with a region subtag {#lang-span-region}
+[code om]
+She wrote [lang pt-BR]obrigada[/lang] at the end.
+[/code]
+[code html]
+<p>She wrote <span lang="pt-BR">obrigada</span> at the end.</p>
+[/code]
+
+h3. Formatting inside a span {#lang-span-formatting}
+[code om]
+The motto is [lang la]*carpe* diem[/lang].
+[/code]
+[code html]
+<p>The motto is <span lang="la"><strong>carpe</strong> diem</span>.</p>
+[/code]
+
+h3. Nested spans {#lang-span-nested}
+[code om]
+[lang fr]Il a dit [lang de]Guten Tag[/lang] hier.[/lang]
+[/code]
+[code html]
+<p><span lang="fr">Il a dit <span lang="de">Guten Tag</span> hier.</span></p>
+[/code]
+
+h3. Wrong casing is literal {#lang-span-casing}
+[code om]
+A [Lang fr]mot[/Lang] here.
+[/code]
+[code html]
+<p>A [Lang fr]mot[/Lang] here.</p>
+[/code]
+
+h3. Whitespace inside the brackets is literal {#lang-span-whitespace}
+[code om]
+A [ lang fr]mot[/lang ] here.
+[/code]
+[code html]
+<p>A [ lang fr]mot[/lang ] here.</p>
+[/code]
+
+h3. Span not closed on its line is literal {#lang-span-unclosed}
+[code om]
+Say [lang fr]bonjour twice.
+[/code]
+[code html]
+<p>Say [lang fr]bonjour twice.</p>
+[/code]
+
+h3. Stray closing tag after text is literal {#lang-span-stray-closing}
+[code om]
+[lang fr]début
+fin[/lang]
+[/code]
+[code html]
+<p>[lang fr]début<br>
+fin[/lang]</p>
+[/code]
+
+h3. Span without a language code is an error {#lang-span-without-code}
+[code om]
+Some [lang]text[/lang] here.
+[/code]
+[code error]
+lang-without-code 1
+[/code]
+
+h2. Blocks
+
+h3. Block without a language code is an error {#lang-block-without-code}
+[code om]
+Intro.
+
+[lang]
+Texte.
+[/lang]
+[/code]
+[code error]
+lang-without-code 3
+[/code]
+
+h3. Block closing tag after text on the same line is an error {#lang-block-closing-mid-line}
+[code om]
+[lang fr]
+Texte.[/lang]
+[/code]
+[code error]
+block-tag-mid-line 2
+[/code]
+
+h3. Block with line breaks {#lang-block}
+[code om]
+[lang uk]
+Це цілий абзац українською мовою.
+З кількома рядками.
+[/lang]
+[/code]
+[code html]
+<div lang="uk">
+  <p>Це цілий абзац українською мовою.<br>
+  З кількома рядками.</p>
+</div>
+[/code]
+
+h3. Block with several paragraphs {#lang-block-paragraphs}
+[code om]
+[lang de]
+Erster Absatz.
+
+Zweiter Absatz.
+[/lang]
+[/code]
+[code html]
+<div lang="de">
+  <p>Erster Absatz.</p>
+  <p>Zweiter Absatz.</p>
+</div>
+[/code]
+
+h3. Block containing a list {#lang-block-list}
+[code om]
+[lang fr]
+* Pomme
+* Poire
+[/lang]
+[/code]
+[code html]
+<div lang="fr">
+  <ul>
+    <li>Pomme</li>
+    <li>Poire</li>
+  </ul>
+</div>
+[/code]
+
+h3. Block containing a heading {#lang-block-heading}
+[code om]
+[lang fr]
+h2. Bonjour
+
+Texte.
+[/lang]
+[/code]
+[code html]
+<div lang="fr">
+  <h2 id="bonjour">Bonjour</h2>
+  <p>Texte.</p>
+</div>
+[/code]
+
+h3. Block between paragraphs {#lang-block-between}
+[code om]
+Before.
+
+[lang es]
+Hola.
+[/lang]
+
+After.
+[/code]
+[code html]
+<p>Before.</p>
+<div lang="es">
+  <p>Hola.</p>
+</div>
+<p>After.</p>
+[/code]
+
+h3. Indented block content {#lang-block-indented}
+[code om]
+[lang it]
+    Ciao.
+[/lang]
+[/code]
+[code html]
+<div lang="it">
+  <p>Ciao.</p>
+</div>
+[/code]
+
+h3. Block tag after text on the same line is an error {#lang-block-mid-line}
+[code om]
+Some text [lang uk]
+Текст українською.
+[/lang]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Unclosed block is an error {#lang-block-unclosed}
+[code om]
+[lang uk]
+Текст українською.
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h2. Profiles
+
+h3. Spans are allowed in the inline profile {#lang-profile-inline-span}
+; profile
+: inline
+[code om]
+Say [lang fr]bonjour[/lang] twice.
+[/code]
+[code html]
+Say <span lang="fr">bonjour</span> twice.
+[/code]
+
+h3. Blocks are not allowed in the basic profile {#lang-profile-basic-block}
+; profile
+: basic
+[code om]
+Intro.
+
+[lang fr]
+Bonjour.
+[/lang]
+[/code]
+[code error]
+feature-not-in-profile 3
+[/code]
+
+h3. Blocks are allowed in the standard profile {#lang-profile-standard-block}
+; profile
+: standard
+[code om]
+[lang fr]
+Bonjour.
+[/lang]
+[/code]
+[code html]
+<div lang="fr">
+  <p>Bonjour.</p>
+</div>
+[/code]

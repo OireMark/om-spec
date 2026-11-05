@@ -1,0 +1,245 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Parsing Rules
+[/meta]
+
+h1. Parsing Rules
+
+Tests for Section 22 of the specification.
+
+h2. Literal Output
+
+h3. Overlapping inline formatting {#parsing-overlap}
+[code om]
+*_bad overlap*_
+[/code]
+[code html]
+<p>*_bad overlap*_</p>
+[/code]
+
+h3. Tag casing {#parsing-tag-case}
+[code om]
+[Note]
+Text
+[/Note]
+[/code]
+[code html]
+<p>[Note]<br>
+Text<br>
+[/Note]</p>
+[/code]
+
+h3. Reserved tags in the wrong case are text {#parsing-reserved-case}
+[code om]
+[Alert]
+[/code]
+[code html]
+<p>[Alert]</p>
+[/code]
+
+h3. Space after the opening bracket {#parsing-tag-space-before}
+[code om]
+[ note]
+[/code]
+[code html]
+<p>[ note]</p>
+[/code]
+
+h3. Space before the closing bracket {#parsing-tag-space-after}
+[code om]
+[note ]
+[/code]
+[code html]
+<p>[note ]</p>
+[/code]
+
+h3. Unknown tags are text {#parsing-unknown-tags}
+[code om]
+See [foo] and [/about].
+[/code]
+[code html]
+<p>See [foo] and [/about].</p>
+[/code]
+
+h2. Raw HTML
+
+h3. Script tags are escaped {#parsing-html-script}
+[code om]
+<script>alert('xss')</script>
+[/code]
+[code html]
+<p>&lt;script&gt;alert('xss')&lt;/script&gt;</p>
+[/code]
+
+h3. Inline tags are escaped {#parsing-html-inline}
+[code om]
+Some <b>bold</b> text.
+[/code]
+[code html]
+<p>Some &lt;b&gt;bold&lt;/b&gt; text.</p>
+[/code]
+
+h3. HTML in a code span is escaped {#parsing-html-code-span}
+[code om]
+Use `<b>` for bold.
+[/code]
+[code html]
+<p>Use <code>&lt;b&gt;</code> for bold.</p>
+[/code]
+
+h3. Quotes in a URL cannot break out of the attribute {#parsing-html-url-quote}
+[code om]
+[x]:https://example.com/"onmouseover=alert(1)
+[/code]
+[code html]
+<p><a href="https://example.com/&quot;onmouseover=alert(1)">x</a></p>
+[/code]
+
+h3. Character references are escaped {#parsing-html-entities}
+[code om]
+&copy; 2026 &amp; more
+[/code]
+[code html]
+<p>&amp;copy; 2026 &amp;amp; more</p>
+[/code]
+
+h2. Errors
+
+h3. Stray closing tag {#parsing-stray-close}
+[code om]
+Text.
+
+[/note]
+[/code]
+[code error]
+mismatched-tag 3
+[/code]
+
+h3. Closing tag after text {#parsing-close-after-text}
+[code om]
+[quote]
+Text.[/quote]
+[/quote]
+[/code]
+[code error]
+block-tag-mid-line 2
+[/code]
+
+h3. Closing tag before text {#parsing-close-before-text}
+[code om]
+[quote]
+Text.
+[/quote] More.
+[/quote]
+[/code]
+[code error]
+block-tag-mid-line 3
+[/code]
+
+h3. Unclosed block tag {#parsing-unclosed}
+[code om]
+[quote]
+Text.
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h3. Mismatched closing tag {#parsing-mismatched}
+[code om]
+[note]
+Text.
+[/quote]
+[/code]
+[code error]
+mismatched-tag 3
+[/code]
+
+h3. Outer block closed while an inner one is open {#parsing-mismatched-inner-open}
+[code om]
+[more Title]
+[note]
+Text.
+[/more]
+[/code]
+[code error]
+mismatched-tag 4
+[/code]
+
+h3. Block tag mid-line {#parsing-block-mid-line}
+[code om]
+Some text [quote]Invalid[/quote]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Block language tag after text {#parsing-block-lang-mid-line}
+[code om]
+Some text [lang uk]
+Текст українською.
+[/lang]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. The first error is reported {#parsing-first-error}
+[code om]
+[alert]
+Text.
+[/alert]
+
+[verse]
+[/code]
+[code error]
+reserved-tag 1
+[/code]
+
+h2. Reserved Tags
+
+h3. Alert {#parsing-reserved-alert}
+[code om]
+[alert]
+Your session will expire.
+[/alert]
+[/code]
+[code error]
+reserved-tag 1
+[/code]
+
+h3. Verse {#parsing-reserved-verse}
+[code om]
+[verse]
+Line one
+[/verse]
+[/code]
+[code error]
+reserved-tag 1
+[/code]
+
+h3. Center {#parsing-reserved-center}
+[code om]
+[center]
+Text.
+[/center]
+[/code]
+[code error]
+reserved-tag 1
+[/code]
+
+h3. Endnote reference {#parsing-reserved-endnote-ref}
+[code om]
+A claim[en1].
+[/code]
+[code error]
+reserved-tag 1
+[/code]
+
+h3. Abbreviation {#parsing-reserved-abbr}
+[code om]
+The [abbr HTML]HyperText Markup Language[/abbr] spec.
+[/code]
+[code error]
+reserved-tag 1
+[/code]

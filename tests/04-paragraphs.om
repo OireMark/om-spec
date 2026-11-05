@@ -1,0 +1,317 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Paragraphs and Line Breaks
+[/meta]
+
+h1. Paragraphs and Line Breaks
+
+Tests for Section 4 of the specification.
+
+h2. Line Breaks
+
+h3. Single line {#paragraphs-single-line}
+[code om]
+Just one line.
+[/code]
+[code html]
+<p>Just one line.</p>
+[/code]
+
+h3. Single newline is a line break {#paragraphs-line-break}
+[code om]
+This is line one.
+This is line two, same paragraph, with a line break before it.
+[/code]
+[code html]
+<p>This is line one.<br>
+This is line two, same paragraph, with a line break before it.</p>
+[/code]
+
+h3. Several line breaks in one paragraph {#paragraphs-several-breaks}
+[code om]
+Roses are red,
+Violets are blue,
+OireMark is strict
+[/code]
+[code html]
+<p>Roses are red,<br>
+Violets are blue,<br>
+OireMark is strict</p>
+[/code]
+
+h3. Markers do not pair across a line break {#paragraphs-break-no-pairing}
+[code om]
+*bold
+text*
+[/code]
+[code html]
+<p>*bold<br>
+text*</p>
+[/code]
+
+h3. Inline formatting on both sides of a line break {#paragraphs-break-formatting}
+[code om]
+*Bold* line
+_italic_ line
+[/code]
+[code html]
+<p><strong>Bold</strong> line<br>
+<em>italic</em> line</p>
+[/code]
+
+h2. Paragraphs
+
+h3. Blank line starts a new paragraph {#paragraphs-blank-line}
+[code om]
+This is line one.
+This is line two, same paragraph, with a line break before it.
+
+This is a new paragraph.
+[/code]
+[code html]
+<p>This is line one.<br>
+This is line two, same paragraph, with a line break before it.</p>
+<p>This is a new paragraph.</p>
+[/code]
+
+h3. Several blank lines collapse into one paragraph break {#paragraphs-collapse}
+[code om]
+First.
+
+
+
+Second.
+[/code]
+[code html]
+<p>First.</p>
+<p>Second.</p>
+[/code]
+
+h3. Three paragraphs {#paragraphs-three}
+[code om]
+One.
+
+Two.
+
+Three.
+[/code]
+[code html]
+<p>One.</p>
+<p>Two.</p>
+<p>Three.</p>
+[/code]
+
+h3. Leading blank lines produce nothing {#paragraphs-leading-blank}
+[code om]
+
+
+Text.
+[/code]
+[code html]
+<p>Text.</p>
+[/code]
+
+h3. Trailing newlines and blank lines are ignored {#paragraphs-trailing-blank}
+[code hex]
+54 65 78 74 2E 0A 0A 0A
+[/code]
+[code html]
+<p>Text.</p>
+[/code]
+
+h2. Block Elements End a Paragraph
+
+h3. A list item ends a paragraph {#paragraphs-end-list}
+[code om]
+Shopping list:
+* Milk
+* Eggs
+[/code]
+[code html]
+<p>Shopping list:</p>
+<ul>
+  <li>Milk</li>
+  <li>Eggs</li>
+</ul>
+[/code]
+
+h3. A numbered list item ends a paragraph {#paragraphs-end-numbered}
+[code om]
+I just finished reading
+1984. Orwell at his best.
+[/code]
+[code html]
+<p>I just finished reading</p>
+<ol start="1984">
+  <li>Orwell at his best.</li>
+</ol>
+[/code]
+
+h3. A heading ends a paragraph {#paragraphs-end-heading}
+[code om]
+Intro text
+h2. Heading
+[/code]
+[code html]
+<p>Intro text</p>
+<h2 id="heading">Heading</h2>
+[/code]
+
+h3. A block tag ends a paragraph {#paragraphs-end-block-tag}
+[code om]
+Before
+[note]
+Inside
+[/note]
+[/code]
+[code html]
+<p>Before</p>
+<div role="note" class="note">
+  <p>Inside</p>
+</div>
+[/code]
+
+h3. A short form quote ends a paragraph {#paragraphs-end-quote}
+[code om]
+Before
+> Quoted
+[/code]
+[code html]
+<p>Before</p>
+<blockquote>
+  <p>Quoted</p>
+</blockquote>
+[/code]
+
+h3. A horizontal rule ends a paragraph {#paragraphs-end-rule}
+[code om]
+Before
+---
+After
+[/code]
+[code html]
+<p>Before</p>
+<hr>
+<p>After</p>
+[/code]
+
+h3. A table row ends a paragraph {#paragraphs-end-table}
+[code om]
+Before
+| a | b |
+[/code]
+[code html]
+<p>Before</p>
+<table>
+  <tbody>
+    <tr><td>a</td><td>b</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. A definition term ends a paragraph {#paragraphs-end-definition}
+[code om]
+Before
+; Term
+: Definition
+[/code]
+[code html]
+<p>Before</p>
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+[/code]
+
+h3. A code fence ends a paragraph {#paragraphs-end-fence}
+````om
+Before
+```
+code
+```
+````
+[code html]
+<p>Before</p>
+<pre><code>code
+</code></pre>
+[/code]
+
+h3. Text that only resembles a list marker continues the paragraph {#paragraphs-not-list}
+[code om]
+Text
+*not a list
+[/code]
+[code html]
+<p>Text<br>
+*not a list</p>
+[/code]
+
+h3. Text that only resembles a quote continues the paragraph {#paragraphs-not-quote}
+[code om]
+Text
+>not a quote
+[/code]
+[code html]
+<p>Text<br>
+&gt;not a quote</p>
+[/code]
+
+h3. Text that only resembles a heading continues the paragraph {#paragraphs-not-heading}
+[code om]
+Text
+h2.Title
+[/code]
+[code html]
+<p>Text<br>
+h2.Title</p>
+[/code]
+
+h2. Profiles
+
+h3. Paragraphs are allowed in the basic profile {#paragraphs-profile-basic}
+; profile
+: basic
+[code om]
+One.
+Still one.
+
+Two.
+[/code]
+[code html]
+<p>One.<br>
+Still one.</p>
+<p>Two.</p>
+[/code]
+
+h3. Inline profile output is not wrapped in a paragraph {#paragraphs-profile-inline}
+; profile
+: inline
+[code om]
+*Hello*, world
+[/code]
+[code html]
+<strong>Hello</strong>, world
+[/code]
+
+h3. A newline is an error in the inline profile {#paragraphs-profile-inline-newline}
+; profile
+: inline
+[code om]
+First line
+Second line
+[/code]
+[code error]
+feature-not-in-profile 2
+[/code]
+
+h3. A blank line is an error in the inline profile {#paragraphs-profile-inline-blank}
+; profile
+: inline
+[code om]
+First
+
+Second
+[/code]
+[code error]
+feature-not-in-profile 2
+[/code]

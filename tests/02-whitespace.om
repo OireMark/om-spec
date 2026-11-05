@@ -1,0 +1,357 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Whitespace
+[/meta]
+
+h1. Whitespace
+
+Tests for Section 2 of the specification.
+
+h2. Block Tags Start a Line
+
+h3. Quote tag mid-line is an error {#whitespace-quote-mid-line}
+[code om]
+h2. Valid Heading
+
+Some text [quote]Invalid — block tag mid-line[/quote]
+[/code]
+[code error]
+block-tag-mid-line 3
+[/code]
+
+h3. Note tag mid-line is an error {#whitespace-note-mid-line}
+[code om]
+Text [note]Not allowed[/note]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Code tag mid-line is an error {#whitespace-code-mid-line}
+[code om]
+Use the [code] tag for programs.
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Table of contents tag mid-line is an error {#whitespace-toc-mid-line}
+[code om]
+Contents: [toc]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Footnote block tag mid-line is an error {#whitespace-fn-mid-line}
+[code om]
+Notes follow [fn]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Block lang with content before it is an error {#whitespace-lang-block-mid-line}
+[code om]
+Some text [lang uk]
+Текст українською.
+[/lang]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Content after an opening block tag is an error {#whitespace-content-after-opening-tag}
+[code om]
+[note]Text
+[/note]
+[/code]
+[code error]
+block-tag-mid-line 1
+[/code]
+
+h3. Closing block tag after content is an error {#whitespace-closing-tag-mid-line}
+[code om]
+[note]
+Text[/note]
+[/code]
+[code error]
+block-tag-mid-line 2
+[/code]
+
+h3. Closing lang tag after content is an error {#whitespace-lang-closing-mid-line}
+[code om]
+[lang fr]
+Texte[/lang]
+[/code]
+[code error]
+block-tag-mid-line 2
+[/code]
+
+h3. Closing tag with nothing open is an error {#whitespace-stray-closing-tag}
+[code om]
+Text.
+
+[/quote]
+[/code]
+[code error]
+mismatched-tag 3
+[/code]
+
+h3. Escaped tag mid-line is text {#whitespace-escaped-tag-mid-line}
+[code om]
+Some text \[quote]not a quote
+[/code]
+[code html]
+<p>Some text [quote]not a quote</p>
+[/code]
+
+h2. Inline and Block Lang
+
+h3. Content on the same line makes an inline span {#whitespace-lang-inline}
+[code om]
+Here is [lang fr]texte en français[/lang] in English.
+[/code]
+[code html]
+<p>Here is <span lang="fr">texte en français</span> in English.</p>
+[/code]
+
+h3. Inline span at the start of a line {#whitespace-lang-inline-line-start}
+[code om]
+[lang fr]Bonjour[/lang] says the sign.
+[/code]
+[code html]
+<p><span lang="fr">Bonjour</span> says the sign.</p>
+[/code]
+
+h3. Unclosed inline lang is literal text {#whitespace-lang-inline-unclosed}
+[code om]
+Here is [lang fr]texte without an end.
+[/code]
+[code html]
+<p>Here is [lang fr]texte without an end.</p>
+[/code]
+
+h3. Unclosed inline lang at the start of a line is literal text {#whitespace-lang-inline-unclosed-line-start}
+[code om]
+[lang fr]Bonjour
+[/code]
+[code html]
+<p>[lang fr]Bonjour</p>
+[/code]
+
+h3. Newline after the opening tag makes a block {#whitespace-lang-block}
+[code om]
+[lang fr]
+Ceci est un paragraphe entier en français.
+Avec plusieurs lignes.
+[/lang]
+[/code]
+[code html]
+<div lang="fr">
+  <p>Ceci est un paragraphe entier en français.<br>
+  Avec plusieurs lignes.</p>
+</div>
+[/code]
+
+h3. Block lang may contain a list {#whitespace-lang-block-list}
+[code om]
+[lang uk]
+* Один
+* Два
+[/lang]
+[/code]
+[code html]
+<div lang="uk">
+  <ul>
+    <li>Один</li>
+    <li>Два</li>
+  </ul>
+</div>
+[/code]
+
+h3. Block lang may contain several paragraphs {#whitespace-lang-block-paragraphs}
+[code om]
+[lang de]
+Erster Absatz.
+
+Zweiter Absatz.
+[/lang]
+[/code]
+[code html]
+<div lang="de">
+  <p>Erster Absatz.</p>
+  <p>Zweiter Absatz.</p>
+</div>
+[/code]
+
+h3. Inline lang is allowed in the inline profile {#whitespace-lang-inline-profile}
+; profile
+: inline
+[code om]
+Say [lang fr]oui[/lang] please
+[/code]
+[code html]
+Say <span lang="fr">oui</span> please
+[/code]
+
+h3. Block lang is not allowed in the basic profile {#whitespace-lang-block-basic}
+; profile
+: basic
+[code om]
+[lang fr]
+Bonjour.
+[/lang]
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h2. Line Preparation
+
+h3. Trailing spaces are removed {#whitespace-trailing-spaces}
+[code hex]
+61 20 20 0A 62
+[/code]
+[code html]
+<p>a<br>b</p>
+[/code]
+
+h3. Trailing tab is removed {#whitespace-trailing-tab}
+[code hex]
+61 09 0A 62
+[/code]
+[code html]
+<p>a<br>b</p>
+[/code]
+
+h3. Trailing spaces after a heading are removed {#whitespace-trailing-heading}
+[code hex]
+68 32 2E 20 54 69 74 6C 65 20 20
+[/code]
+[code html]
+<h2 id="title">Title</h2>
+[/code]
+
+h3. Trailing spaces are kept inside a code block {#whitespace-trailing-code}
+[code hex]
+5B 63 6F 64 65 5D 0A 78 20 20 0A 5B 2F 63 6F 64 65 5D
+[/code]
+[code html]
+<pre><code>x&#32;&#32;
+</code></pre>
+[/code]
+
+h3. Spaces inside a line are kept {#whitespace-inner-spaces}
+[code om]
+a   b
+[/code]
+[code html]
+<p>a   b</p>
+[/code]
+
+h3. A tab inside a line is kept {#whitespace-inner-tab}
+[code hex]
+61 09 62
+[/code]
+[code html]
+<p>a&#9;b</p>
+[/code]
+
+h3. Final newline is ignored {#whitespace-final-newline}
+[code hex]
+61 0A
+[/code]
+[code html]
+<p>a</p>
+[/code]
+
+h3. Final blank lines are ignored {#whitespace-final-blank-lines}
+[code hex]
+61 0A 0A 20 0A 0A
+[/code]
+[code html]
+<p>a</p>
+[/code]
+
+h3. Final newline is ignored in the inline profile {#whitespace-final-newline-inline}
+; profile
+: inline
+[code hex]
+61 0A 0A
+[/code]
+[code html]
+a
+[/code]
+
+h2. Indentation
+
+h3. Leading spaces on a paragraph line are ignored {#whitespace-indent-paragraph}
+[code om]
+a
+    b
+[/code]
+[code html]
+<p>a<br>b</p>
+[/code]
+
+h3. Indented content inside a block is ignored {#whitespace-indent-content}
+[code om]
+[note]
+    This is a note.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note">
+  <p>This is a note.</p>
+</div>
+[/code]
+
+h3. Unindented and indented content give the same output {#whitespace-indent-none}
+[code om]
+[note]
+This is a note.
+[/note]
+[/code]
+[code html]
+<div role="note" class="note">
+  <p>This is a note.</p>
+</div>
+[/code]
+
+h3. Indented block tags are recognized {#whitespace-indent-tags}
+[code om]
+    [note]
+    This is a note.
+    [/note]
+[/code]
+[code html]
+<div role="note" class="note">
+  <p>This is a note.</p>
+</div>
+[/code]
+
+h3. Indented list items are list items {#whitespace-indent-list}
+[code om]
+  * One
+      * Two
+[/code]
+[code html]
+<ul>
+  <li>One</li>
+  <li>Two</li>
+</ul>
+[/code]
+
+h3. Indentation inside a code block is preserved {#whitespace-indent-code}
+```om
+[code]
+def hello():
+    print("Hello")
+[/code]
+```
+[code html]
+<pre><code>def hello():
+    print("Hello")
+</code></pre>
+[/code]

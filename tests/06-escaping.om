@@ -1,0 +1,307 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Escaping
+[/meta]
+
+h1. Escaping
+
+Tests for Section 6 of the specification.
+
+h2. Punctuation Escapes
+
+h3. Escaped formatting markers are text {#escaping-markers}
+[code om]
+\*not bold\*
+[/code]
+[code html]
+<p>*not bold*</p>
+[/code]
+
+h3. Escaped brackets are text {#escaping-brackets}
+[code om]
+\[not a tag\]
+[/code]
+[code html]
+<p>[not a tag]</p>
+[/code]
+
+h3. Escaped backslash {#escaping-backslash}
+[code om]
+This is a backslash: \\
+[/code]
+[code html]
+<p>This is a backslash: \</p>
+[/code]
+
+h3. Every ASCII punctuation character can be escaped {#escaping-all-punctuation}
+[code om]
+\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\\\]\^\_\`\{\|\}\~
+[/code]
+[code html]
+<p>!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
+[/code]
+
+h3. Escaped underscore is a literal underscore {#escaping-underscore}
+[code om]
+\_not italic\_ and snake\_case
+[/code]
+[code html]
+<p>_not italic_ and snake_case</p>
+[/code]
+
+h3. Escaped marker inside formatted text {#escaping-inside-formatting}
+[code om]
+*a \* b*
+[/code]
+[code html]
+<p><strong>a * b</strong></p>
+[/code]
+
+h3. Escaped backslash before a marker leaves the marker active {#escaping-double-backslash}
+[code om]
+\\*bold*
+[/code]
+[code html]
+<p>\<strong>bold</strong></p>
+[/code]
+
+h3. Escaped bracket inside link text {#escaping-link-text}
+[code om]
+[a \] b]:https://example.com
+[/code]
+[code html]
+<p><a href="https://example.com">a ] b</a></p>
+[/code]
+
+h3. Escaped opening bracket prevents a link {#escaping-no-link}
+[code om]
+\[text]:https://example.com
+[/code]
+[code html]
+<p>[text]:https://example.com</p>
+[/code]
+
+h2. Escaping Line-Start Markers
+
+h3. Escaped dot after a number is not a list {#escaping-numbered}
+[code om]
+1984\. A good year.
+[/code]
+[code html]
+<p>1984. A good year.</p>
+[/code]
+
+h3. Escaped hash is not a list {#escaping-hash}
+[code om]
+\# Not a list item
+[/code]
+[code html]
+<p># Not a list item</p>
+[/code]
+
+h3. Escaped asterisk is not a list {#escaping-asterisk-list}
+[code om]
+\* Not a list item
+[/code]
+[code html]
+<p>* Not a list item</p>
+[/code]
+
+h3. Escaped hyphen is not a list {#escaping-hyphen-list}
+[code om]
+\- Not a list item
+[/code]
+[code html]
+<p>- Not a list item</p>
+[/code]
+
+h3. Escaped hyphens are not a horizontal rule {#escaping-rule}
+[code om]
+\-\-\-
+[/code]
+[code html]
+<p>---</p>
+[/code]
+
+h3. Escaped greater-than is not a quote {#escaping-quote}
+[code om]
+\> Not a quote
+[/code]
+[code html]
+<p>&gt; Not a quote</p>
+[/code]
+
+h3. Escaped pipe is not a table {#escaping-table}
+[code om]
+\| Not a table |
+[/code]
+[code html]
+<p>| Not a table |</p>
+[/code]
+
+h3. Escaped semicolon is not a term {#escaping-term}
+[code om]
+\; Not a term
+[/code]
+[code html]
+<p>; Not a term</p>
+[/code]
+
+h3. Escaped colon is not a definition {#escaping-definition}
+[code om]
+\: Not a definition
+[/code]
+[code html]
+<p>: Not a definition</p>
+[/code]
+
+h3. Escaped block tag at line start is text {#escaping-block-tag}
+[code om]
+\[note]
+[/code]
+[code html]
+<p>[note]</p>
+[/code]
+
+h2. Non-Breaking Space
+
+h3. Backslash and space make a non-breaking space {#escaping-nbsp}
+[code om]
+10\ 000
+[/code]
+[code html]
+<p>10&nbsp;000</p>
+[/code]
+
+h3. Escaped space is kept in a table cell {#escaping-nbsp-table-cell}
+[code om]
+| a | \ |
+[/code]
+[code html]
+<table>
+  <tbody>
+    <tr><td>a</td><td>&nbsp;</td></tr>
+  </tbody>
+</table>
+[/code]
+
+h3. Escaped space next to an ordinary space {#escaping-nbsp-plus-space}
+[code om]
+a\  b
+[/code]
+[code html]
+<p>a&nbsp; b</p>
+[/code]
+
+h3. Escaped space at the end of a line leaves a backslash {#escaping-nbsp-end-of-line}
+[code hex]
+61 5C 20 0A 62
+[/code]
+[code html]
+<p>a\<br>b</p>
+[/code]
+
+h3. Escaped space at the end of the document leaves a backslash {#escaping-nbsp-end-of-document}
+[code hex]
+31 30 5C 20
+[/code]
+[code html]
+<p>10\</p>
+[/code]
+
+h3. A typed non-breaking space is preserved {#escaping-nbsp-literal}
+[code hex]
+31 30 C2 A0 30 30 30
+[/code]
+[code html]
+<p>10&nbsp;000</p>
+[/code]
+
+h2. Other Backslashes
+
+h3. Backslash before a letter is literal {#escaping-letter}
+[code om]
+\n and \t are not newlines or tabs
+[/code]
+[code html]
+<p>\n and \t are not newlines or tabs</p>
+[/code]
+
+h3. Backslash before a digit is literal {#escaping-digit}
+[code om]
+\5
+[/code]
+[code html]
+<p>\5</p>
+[/code]
+
+h3. Backslash before a non-ASCII character is literal {#escaping-non-ascii}
+[code om]
+\я
+[/code]
+[code html]
+<p>\я</p>
+[/code]
+
+h3. Backslashes in a Windows path are literal {#escaping-path}
+[code om]
+C:\Users\Public
+[/code]
+[code html]
+<p>C:\Users\Public</p>
+[/code]
+
+h3. Backslash at the end of a line is literal {#escaping-end-of-line}
+[code om]
+end\
+next
+[/code]
+[code html]
+<p>end\<br>
+next</p>
+[/code]
+
+h3. Backslash at the end of the document is literal {#escaping-end-of-document}
+[code om]
+end\
+[/code]
+[code html]
+<p>end\</p>
+[/code]
+
+h2. Where Escapes Do Not Apply
+
+h3. No escapes in code spans {#escaping-code-span}
+[code om]
+`\*`
+[/code]
+[code html]
+<p><code>\*</code></p>
+[/code]
+
+h3. Escaped backtick cannot open a code span {#escaping-backtick}
+[code om]
+\`not code`
+[/code]
+[code html]
+<p>`not code`</p>
+[/code]
+
+h3. No escapes in code blocks {#escaping-code-block}
+```om
+[code]
+\*x\*
+[/code]
+```
+[code html]
+<pre><code>\*x\*
+</code></pre>
+[/code]
+
+h3. No escapes in URLs {#escaping-url}
+[code om]
+[link]:https://example.com/a\_b
+[/code]
+[code html]
+<p><a href="https://example.com/a\_b">link</a></p>
+[/code]

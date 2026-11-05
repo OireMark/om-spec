@@ -1,0 +1,293 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Blockquotes
+[/meta]
+
+h1. Blockquotes
+
+Tests for Section 12 of the specification.
+
+h2. Bracket Form
+
+h3. Anonymous quote {#quotes-anonymous}
+[code om]
+[quote]
+Anonymous quote.
+[/quote]
+[/code]
+[code html]
+<blockquote>
+<p>Anonymous quote.</p>
+</blockquote>
+[/code]
+
+h3. Quote with author {#quotes-author}
+[code om]
+[quote Oscar Wilde]
+Quote with author only.
+[/quote]
+[/code]
+[code html]
+<figure class="quote">
+<blockquote>
+<p>Quote with author only.</p>
+</blockquote>
+<figcaption>Oscar Wilde</figcaption>
+</figure>
+[/code]
+
+h3. Quote with source URL {#quotes-url}
+[code om]
+[quote]:https://example.com/source
+Quote with source URL only.
+[/quote]
+[/code]
+[code html]
+<blockquote cite="https://example.com/source">
+<p>Quote with source URL only.</p>
+</blockquote>
+[/code]
+
+h3. Quote with author and source URL {#quotes-author-url}
+[code om]
+[quote Oscar Wilde]:https://en.wikipedia.org/wiki/Oscar_Wilde
+I can resist everything except temptation.
+[/quote]
+[/code]
+[code html]
+<figure class="quote">
+<blockquote cite="https://en.wikipedia.org/wiki/Oscar_Wilde">
+<p>I can resist everything except temptation.</p>
+</blockquote>
+<figcaption><a href="https://en.wikipedia.org/wiki/Oscar_Wilde">Oscar Wilde</a></figcaption>
+</figure>
+[/code]
+
+h3. Source URL auto-detection {#quotes-url-autodetect}
+[code om]
+[quote]:www.example.com/source
+Text.
+[/quote]
+[/code]
+[code html]
+<blockquote cite="https://www.example.com/source">
+<p>Text.</p>
+</blockquote>
+[/code]
+
+h3. Author and auto-detected source URL {#quotes-author-url-autodetect}
+[code om]
+[quote Someone]:www.example.com
+Text.
+[/quote]
+[/code]
+[code html]
+<figure class="quote">
+<blockquote cite="https://www.example.com">
+<p>Text.</p>
+</blockquote>
+<figcaption><a href="https://www.example.com">Someone</a></figcaption>
+</figure>
+[/code]
+
+h3. Inline formatting in the author {#quotes-author-formatting}
+[code om]
+[quote Oscar _Wilde_]
+Text.
+[/quote]
+[/code]
+[code html]
+<figure class="quote">
+<blockquote>
+<p>Text.</p>
+</blockquote>
+<figcaption>Oscar <em>Wilde</em></figcaption>
+</figure>
+[/code]
+
+h3. Line breaks and paragraphs {#quotes-paragraphs}
+[code om]
+[quote]
+Line one.
+Line two.
+
+Second paragraph.
+[/quote]
+[/code]
+[code html]
+<blockquote>
+<p>Line one.<br>
+Line two.</p>
+<p>Second paragraph.</p>
+</blockquote>
+[/code]
+
+h3. Lists and code are allowed {#quotes-list-code}
+```om
+[quote]
+* First
+* Second
+
+[code]
+x
+[/code]
+[/quote]
+```
+[code html]
+<blockquote>
+<ul>
+<li>First</li>
+<li>Second</li>
+</ul>
+<pre><code>x
+</code></pre>
+</blockquote>
+[/code]
+
+h3. Inline formatting {#quotes-bracket-inline}
+[code om]
+[quote]
+This is *bold* and _italic_.
+[/quote]
+[/code]
+[code html]
+<blockquote>
+<p>This is <strong>bold</strong> and <em>italic</em>.</p>
+</blockquote>
+[/code]
+
+h3. Nested bracket quotes are an error {#quotes-nested}
+[code om]
+[quote]
+[quote]
+Inner.
+[/quote]
+[/quote]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Headings are not allowed {#quotes-heading}
+[code om]
+[quote]
+h2. Heading
+[/quote]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Unclosed quote {#quotes-unclosed}
+[code om]
+[quote]
+Never closed.
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h2. Short Form
+
+h3. Single line {#quotes-short-single}
+[code om]
+> This is a short blockquote.
+[/code]
+[code html]
+<blockquote>
+<p>This is a short blockquote.</p>
+</blockquote>
+[/code]
+
+h3. Consecutive lines {#quotes-short-multiline}
+[code om]
+> This is the first line.
+> This continues the same blockquote.
+> And so does this.
+[/code]
+[code html]
+<blockquote>
+<p>This is the first line.<br>
+This continues the same blockquote.<br>
+And so does this.</p>
+</blockquote>
+[/code]
+
+h3. A lone marker separates paragraphs {#quotes-short-paragraphs}
+[code om]
+> First paragraph of the quote.
+>
+> Second paragraph of the quote.
+[/code]
+[code html]
+<blockquote>
+<p>First paragraph of the quote.</p>
+<p>Second paragraph of the quote.</p>
+</blockquote>
+[/code]
+
+h3. A line without the marker ends the quote {#quotes-short-termination}
+[code om]
+> This is quoted.
+This is not quoted.
+[/code]
+[code html]
+<blockquote>
+<p>This is quoted.</p>
+</blockquote>
+<p>This is not quoted.</p>
+[/code]
+
+h3. Inline formatting in the short form {#quotes-short-inline}
+[code om]
+> This is *bold* and _italic_ in a quote.
+[/code]
+[code html]
+<blockquote>
+<p>This is <strong>bold</strong> and <em>italic</em> in a quote.</p>
+</blockquote>
+[/code]
+
+h3. A marker without a space is a paragraph {#quotes-short-no-space}
+[code om]
+>text
+[/code]
+[code html]
+<p>&gt;text</p>
+[/code]
+
+h3. A list marker inside a short quote is text {#quotes-short-list-marker}
+[code om]
+> * item
+[/code]
+[code html]
+<blockquote>
+<p>* item</p>
+</blockquote>
+[/code]
+
+h3. A second quote marker is text {#quotes-short-nested-marker}
+[code om]
+> > nested
+[/code]
+[code html]
+<blockquote>
+<p>&gt; nested</p>
+</blockquote>
+[/code]
+
+h3. Escaped marker is text {#quotes-short-escaped}
+[code om]
+\> Not a quote.
+[/code]
+[code html]
+<p>&gt; Not a quote.</p>
+[/code]
+
+h3. Mid-line marker is text {#quotes-short-mid-line}
+[code om]
+a > b
+[/code]
+[code html]
+<p>a &gt; b</p>
+[/code]

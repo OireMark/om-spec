@@ -1,0 +1,505 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Links
+[/meta]
+
+h1. Links
+
+Tests for Section 7 of the specification.
+
+h2. Basic Syntax
+
+h3. Link on its own line {#links-basic}
+[code om]
+[Example]:https://example.com
+[/code]
+[code html]
+<p><a href="https://example.com">Example</a></p>
+[/code]
+
+h3. Link inside a sentence {#links-in-sentence}
+[code om]
+Read [the docs]:https://example.com/docs now.
+[/code]
+[code html]
+<p>Read <a href="https://example.com/docs">the docs</a> now.</p>
+[/code]
+
+h3. Escaped bracket inside link text {#links-escaped-bracket-in-text}
+[code om]
+[a \] b]:https://example.com
+[/code]
+[code html]
+<p><a href="https://example.com">a ] b</a></p>
+[/code]
+
+h3. A bare URL is not a link {#links-bare-url-not-linked}
+[code om]
+Visit https://example.com today.
+[/code]
+[code html]
+<p>Visit https://example.com today.</p>
+[/code]
+
+h3. Empty link text renders literally {#links-empty-text}
+[code om]
+[]:https://example.com
+[/code]
+[code html]
+<p>[]:https://example.com</p>
+[/code]
+
+h2. Where a URL Ends
+
+h3. URL ends at whitespace {#links-url-ends-at-space}
+[code om]
+[Example]:https://example.com/page and more
+[/code]
+[code html]
+<p><a href="https://example.com/page">Example</a> and more</p>
+[/code]
+
+h3. URL ends at end of line {#links-url-ends-at-eol}
+[code om]
+[One]:https://example.com/one
+[Two]:https://example.com/two
+[/code]
+[code html]
+<p><a href="https://example.com/one">One</a><br>
+<a href="https://example.com/two">Two</a></p>
+[/code]
+
+h3. Trailing period is not part of the URL {#links-trailing-period}
+[code om]
+See [the guide]:https://example.com/guide.
+[/code]
+[code html]
+<p>See <a href="https://example.com/guide">the guide</a>.</p>
+[/code]
+
+h3. Other trailing punctuation is not part of the URL {#links-trailing-punctuation}
+[code om]
+Go [a]:https://example.com/a, now
+Go [b]:https://example.com/b; now
+Go [c]:https://example.com/c: now
+Go [d]:https://example.com/d! now
+Go [e]:https://example.com/e? now
+[/code]
+[code html]
+<p>Go <a href="https://example.com/a">a</a>, now<br>
+Go <a href="https://example.com/b">b</a>; now<br>
+Go <a href="https://example.com/c">c</a>: now<br>
+Go <a href="https://example.com/d">d</a>! now<br>
+Go <a href="https://example.com/e">e</a>? now</p>
+[/code]
+
+h3. Trailing quotes are not part of the URL {#links-trailing-quotes}
+[code om]
+It is at '[the site]:https://example.com' now.
+He said "[here]:https://example.com/x" twice.
+[/code]
+[code html]
+<p>It is at '<a href="https://example.com">the site</a>' now.<br>
+He said "<a href="https://example.com/x">here</a>" twice.</p>
+[/code]
+
+h3. Balanced parentheses stay in the URL {#links-balanced-parentheses}
+[code om]
+Read [the article]:https://en.wikipedia.org/wiki/Mercury_(planet), then continue.
+[/code]
+[code html]
+<p>Read <a href="https://en.wikipedia.org/wiki/Mercury_(planet)">the article</a>, then continue.</p>
+[/code]
+
+h3. Unbalanced closing parenthesis is not part of the URL {#links-unbalanced-parenthesis}
+[code om]
+(see [the guide]:https://example.com/guide)
+[/code]
+[code html]
+<p>(see <a href="https://example.com/guide">the guide</a>)</p>
+[/code]
+
+h3. Stripping repeats until nothing applies {#links-strip-repeated}
+[code om]
+(see [the guide]:https://example.com/guide.)
+[/code]
+[code html]
+<p>(see <a href="https://example.com/guide">the guide</a>.)</p>
+[/code]
+
+h3. A link can end a bold span {#links-strip-bold-marker}
+[code om]
+*see [docs]:https://example.com*
+[/code]
+[code html]
+<p><strong>see <a href="https://example.com">docs</a></strong></p>
+[/code]
+
+h3. A link can end an italic span before punctuation {#links-strip-italic-marker}
+[code om]
+_read [this]:https://example.com/x_.
+[/code]
+[code html]
+<p><em>read <a href="https://example.com/x">this</a></em>.</p>
+[/code]
+
+h3. Formatting markers inside a URL are literal {#links-url-literal-markers}
+[code om]
+[Draft]:https://example.com/*draft*/page
+[/code]
+[code html]
+<p><a href="https://example.com/*draft*/page">Draft</a></p>
+[/code]
+
+h3. Escapes inside a URL are literal {#links-url-literal-escapes}
+[code om]
+[Path]:https://example.com/a\_b/c
+[/code]
+[code html]
+<p><a href="https://example.com/a\_b/c">Path</a></p>
+[/code]
+
+h3. Ampersand in a URL is escaped in the attribute {#links-url-ampersand}
+[code om]
+[Search]:https://example.com/?q=a&lang=en
+[/code]
+[code html]
+<p><a href="https://example.com/?q=a&amp;lang=en">Search</a></p>
+[/code]
+
+h3. Percent-encoded trailing period is kept {#links-percent-encoded-period}
+[code om]
+[Version 1]:https://example.com/v1%2E
+[/code]
+[code html]
+<p><a href="https://example.com/v1%2E">Version 1</a></p>
+[/code]
+
+h2. URL Normalization
+
+h3. www gets https {#links-normalize-www}
+[code om]
+[Visit site]:www.example.com
+[/code]
+[code html]
+<p><a href="https://www.example.com">Visit site</a></p>
+[/code]
+
+h3. Email address gets mailto {#links-normalize-email}
+[code om]
+[Contact us]:hello@example.com
+[/code]
+[code html]
+<p><a href="mailto:hello@example.com">Contact us</a></p>
+[/code]
+
+h3. Email with subdomains {#links-normalize-email-subdomain}
+[code om]
+[Support]:support@mail.company.org
+[/code]
+[code html]
+<p><a href="mailto:support@mail.company.org">Support</a></p>
+[/code]
+
+h3. Explicit mailto is unchanged {#links-normalize-mailto-unchanged}
+[code om]
+[Write]:mailto:hello@example.com
+[/code]
+[code html]
+<p><a href="mailto:hello@example.com">Write</a></p>
+[/code]
+
+h3. Explicit http is unchanged {#links-normalize-http-unchanged}
+[code om]
+[Old site]:http://example.com
+[/code]
+[code html]
+<p><a href="http://example.com">Old site</a></p>
+[/code]
+
+h3. tel scheme is unchanged {#links-normalize-tel}
+[code om]
+[Call us]:tel:+33123456789
+[/code]
+[code html]
+<p><a href="tel:+33123456789">Call us</a></p>
+[/code]
+
+h3. Unknown schemes are unchanged {#links-normalize-unknown-schemes}
+[code om]
+[Open in app]:myapp://action/123
+
+[Join call]:zoommtg://zoom.us/join?confno=123
+[/code]
+[code html]
+<p><a href="myapp://action/123">Open in app</a></p>
+<p><a href="zoommtg://zoom.us/join?confno=123">Join call</a></p>
+[/code]
+
+h3. Relative path is unchanged {#links-normalize-relative}
+[code om]
+[About]:/about
+
+[Next]:./next-page
+[/code]
+[code html]
+<p><a href="/about">About</a></p>
+<p><a href="./next-page">Next</a></p>
+[/code]
+
+h3. Anchor is unchanged {#links-normalize-anchor}
+[code om]
+[Back to top]:#top
+[/code]
+[code html]
+<p><a href="#top">Back to top</a></p>
+[/code]
+
+h3. A domain without www is a relative URL {#links-normalize-domain-without-www}
+[code om]
+[Site]:example.com
+[/code]
+[code html]
+<p><a href="example.com">Site</a></p>
+[/code]
+
+h3. Scheme names may contain plus, hyphen and dot {#links-normalize-scheme-chars}
+[code om]
+[Repository]:git+ssh://example.com/repo.git
+[/code]
+[code html]
+<p><a href="git+ssh://example.com/repo.git">Repository</a></p>
+[/code]
+
+h3. A host with a port and no // counts as a scheme {#links-normalize-host-port-scheme}
+[code om]
+[Local]:localhost:8080/page
+[/code]
+[code html]
+<p><a href="localhost:8080/page">Local</a></p>
+[/code]
+
+h3. www is checked before scheme detection {#links-normalize-www-with-port}
+[code om]
+[Admin]:www.example.com:8080/x
+[/code]
+[code html]
+<p><a href="https://www.example.com:8080/x">Admin</a></p>
+[/code]
+
+h3. Text with @ but no dot after it is not an email {#links-normalize-not-email}
+[code om]
+[Price]:price@50
+[/code]
+[code html]
+<p><a href="price@50">Price</a></p>
+[/code]
+
+h2. Link Targets
+
+h3. Web links get no target attribute {#links-no-target}
+[code om]
+[Secure]:https://example.com
+
+[Plain]:http://example.com
+[/code]
+[code html]
+<p><a href="https://example.com">Secure</a></p>
+<p><a href="http://example.com">Plain</a></p>
+[/code]
+
+h2. Mentions
+
+h3. Text starting with @ is a mention {#links-mention}
+[code om]
+[@Menelion]:https://dragonscave.space/@Menelion
+[/code]
+[code html]
+<p><a href="https://dragonscave.space/@Menelion" class="mention">@Menelion</a></p>
+[/code]
+
+h3. Mention regardless of URL structure {#links-mention-any-url}
+[code om]
+[@jack]:https://bsky.app/profile/jack.bsky.social
+[/code]
+[code html]
+<p><a href="https://bsky.app/profile/jack.bsky.social" class="mention">@jack</a></p>
+[/code]
+
+h3. @ later in the text is not a mention {#links-mention-not-first}
+[code om]
+[Ask @jack]:https://example.com/jack
+[/code]
+[code html]
+<p><a href="https://example.com/jack">Ask @jack</a></p>
+[/code]
+
+h2. Link Text with Formatting
+
+h3. Bold link text {#links-formatted-bold}
+[code om]
+[*Bold link text*]:https://example.com
+[/code]
+[code html]
+<p><a href="https://example.com"><strong>Bold link text</strong></a></p>
+[/code]
+
+h3. Partly italic link text {#links-formatted-italic}
+[code om]
+[Visit _Example_]:https://example.com
+[/code]
+[code html]
+<p><a href="https://example.com">Visit <em>Example</em></a></p>
+[/code]
+
+h2. Self-Linking URLs
+
+h3. Self-link with www {#links-self-www}
+[code om]
+[www.example.com]
+[/code]
+[code html]
+<p><a href="https://www.example.com">www.example.com</a></p>
+[/code]
+
+h3. Self-link with email {#links-self-email}
+[code om]
+[hello@example.com]
+[/code]
+[code html]
+<p><a href="mailto:hello@example.com">hello@example.com</a></p>
+[/code]
+
+h3. Self-link with explicit scheme {#links-self-scheme}
+[code om]
+[https://example.com]
+[/code]
+[code html]
+<p><a href="https://example.com">https://example.com</a></p>
+[/code]
+
+h3. Self-link with mailto keeps the written text {#links-self-mailto}
+[code om]
+[mailto:hello@example.com]
+[/code]
+[code html]
+<p><a href="mailto:hello@example.com">mailto:hello@example.com</a></p>
+[/code]
+
+h3. Self-link inside a sentence {#links-self-in-sentence}
+[code om]
+Visit [https://example.com] today.
+[/code]
+[code html]
+<p>Visit <a href="https://example.com">https://example.com</a> today.</p>
+[/code]
+
+h3. In a self-link nothing is stripped from the URL {#links-self-no-stripping}
+[code om]
+[https://example.com/guide.]
+[/code]
+[code html]
+<p><a href="https://example.com/guide.">https://example.com/guide.</a></p>
+[/code]
+
+h3. Bracketed prose stays literal {#links-self-bracketed-prose}
+[code om]
+He said it was "irregardless" [sic].
+As shown in [1], the result holds [citation needed].
+[/code]
+[code html]
+<p>He said it was "irregardless" [sic].<br>
+As shown in [1], the result holds [citation needed].</p>
+[/code]
+
+h3. Relative paths and anchors are not self-links {#links-self-relative-literal}
+[code om]
+Not links: [/about] and [#top]
+[/code]
+[code html]
+<p>Not links: [/about] and [#top]</p>
+[/code]
+
+h2. Profiles
+
+h3. Links in the inline profile are not wrapped in a paragraph {#links-profile-inline}
+; profile
+: inline
+[code om]
+[Example]:https://example.com
+[/code]
+[code html]
+<a href="https://example.com">Example</a>
+[/code]
+
+h2. Unsafe URLs
+
+h3. A javascript link is an error {#links-unsafe-javascript}
+[code om]
+Safe text.
+[click]:javascript:alert(1)
+[/code]
+[code error]
+unsafe-url 2
+[/code]
+
+h3. Letter case doesn't matter {#links-unsafe-mixed-case}
+[code om]
+[click]:JavaScript:alert(1)
+[/code]
+[code error]
+unsafe-url 1
+[/code]
+
+h3. A vbscript link is an error {#links-unsafe-vbscript}
+[code om]
+[click]:vbscript:msgbox(1)
+[/code]
+[code error]
+unsafe-url 1
+[/code]
+
+h3. A data image is an error {#links-unsafe-data-image}
+[code om]
+![Dot]:data:image/png;base64,AAAA
+[/code]
+[code error]
+unsafe-url 1
+[/code]
+
+h3. A self-link with an unsafe scheme is an error {#links-unsafe-self-link}
+[code om]
+[javascript:alert(1)]
+[/code]
+[code error]
+unsafe-url 1
+[/code]
+
+h3. A quote source with an unsafe scheme is an error {#links-unsafe-quote-source}
+[code om]
+[quote]:javascript:alert(1)
+Quoted.
+[/quote]
+[/code]
+[code error]
+unsafe-url 1
+[/code]
+
+h3. A control character in a URL is an error {#links-unsafe-control-character}
+The input is `[x]:a`, the control character U+0001, then `b`.
+[code hex]
+5B 78 5D 3A 61 01 62
+[/code]
+[code error]
+unsafe-url 1
+[/code]
+
+h3. Only the scheme counts, not the word elsewhere in the URL {#links-unsafe-word-in-path}
+[code om]
+[Tutorial]:https://example.com/javascript:intro
+[Guide]:/javascript:basics
+[/code]
+[code html]
+<p><a href="https://example.com/javascript:intro">Tutorial</a><br>
+<a href="/javascript:basics">Guide</a></p>
+[/code]

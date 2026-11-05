@@ -1,0 +1,260 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Images
+[/meta]
+
+h1. Images
+
+Tests for Section 8 of the specification.
+
+h2. Basic Images
+
+h3. Image on its own line {#images-basic}
+[code om]
+![Alt text]:https://example.com/image.png
+[/code]
+[code html]
+<p><img src="https://example.com/image.png" alt="Alt text"></p>
+[/code]
+
+h3. Image inside a sentence {#images-in-sentence}
+[code om]
+Press the ![Gear]:https://example.com/gear.png button.
+[/code]
+[code html]
+<p>Press the <img src="https://example.com/gear.png" alt="Gear"> button.</p>
+[/code]
+
+h3. Without a URL it is not an image {#images-no-url}
+[code om]
+![Alt text] here.
+[/code]
+[code html]
+<p>![Alt text] here.</p>
+[/code]
+
+h3. Dimensions without a URL are literal, not an error {#images-no-url-with-size}
+[code om]
+![Alt text]{300x200} here.
+[/code]
+[code html]
+<p>![Alt text]{300x200} here.</p>
+[/code]
+
+h3. Escaped exclamation mark makes a link, not an image {#images-escaped-bang}
+[code om]
+\![Not an image]:https://example.com/image.png
+[/code]
+[code html]
+<p>!<a href="https://example.com/image.png">Not an image</a></p>
+[/code]
+
+h2. Dimensions
+
+h3. Width and height {#images-size-both}
+[code om]
+![Alt text]{300x200}:https://example.com/image.png
+[/code]
+[code html]
+<p><img src="https://example.com/image.png" alt="Alt text" width="300" height="200"></p>
+[/code]
+
+h3. Width only {#images-size-width}
+[code om]
+![Alt text]{300}:https://example.com/image.png
+[/code]
+[code html]
+<p><img src="https://example.com/image.png" alt="Alt text" width="300"></p>
+[/code]
+
+h3. Height only {#images-size-height}
+[code om]
+![Alt text]{x200}:https://example.com/image.png
+[/code]
+[code html]
+<p><img src="https://example.com/image.png" alt="Alt text" height="200"></p>
+[/code]
+
+h3. Decorative image with dimensions {#images-size-decorative}
+[code om]
+![]{16x16}:https://example.com/dot.png
+[/code]
+[code html]
+<p><img src="https://example.com/dot.png" alt="" width="16" height="16"></p>
+[/code]
+
+h3. Uppercase X is an error {#images-size-uppercase-x}
+[code om]
+![Alt text]{300X200}:https://example.com/image.png
+[/code]
+[code error]
+invalid-image-size 1
+[/code]
+
+h3. Words are an error {#images-size-word}
+[code om]
+![Alt text]{wide}:https://example.com/image.png
+[/code]
+[code error]
+invalid-image-size 1
+[/code]
+
+h3. Zero is an error {#images-size-zero}
+[code om]
+![Alt text]{0x200}:https://example.com/image.png
+[/code]
+[code error]
+invalid-image-size 1
+[/code]
+
+h3. Trailing x without height is an error {#images-size-trailing-x}
+[code om]
+![Alt text]{300x}:https://example.com/image.png
+[/code]
+[code error]
+invalid-image-size 1
+[/code]
+
+h3. Spaces inside the braces are an error {#images-size-spaces}
+[code om]
+![Alt text]{ 300x200 }:https://example.com/image.png
+[/code]
+[code error]
+invalid-image-size 1
+[/code]
+
+h3. Empty braces are an error {#images-size-empty}
+[code om]
+![Alt text]{}:https://example.com/image.png
+[/code]
+[code error]
+invalid-image-size 1
+[/code]
+
+h3. Three dimensions are an error {#images-size-three}
+[code om]
+![Alt text]{300x200x100}:https://example.com/image.png
+[/code]
+[code error]
+invalid-image-size 1
+[/code]
+
+h3. Error is reported on the image's line {#images-size-error-line}
+[code om]
+First paragraph.
+
+Second paragraph with ![Chart]{big}:https://example.com/chart.png inside.
+[/code]
+[code error]
+invalid-image-size 3
+[/code]
+
+h2. Alt Text
+
+h3. A number at the end of alt text is not a size {#images-alt-number}
+[code om]
+![Photo from 2024]:https://example.com/photo.jpg
+[/code]
+[code html]
+<p><img src="https://example.com/photo.jpg" alt="Photo from 2024"></p>
+[/code]
+
+h3. Size-like text in alt is not a size {#images-alt-size-like}
+[code om]
+![Logo 300x200]:https://example.com/logo.png
+[/code]
+[code html]
+<p><img src="https://example.com/logo.png" alt="Logo 300x200"></p>
+[/code]
+
+h3. Formatting markers are removed from alt text {#images-alt-markers-removed}
+[code om]
+![The *new* logo]:https://example.com/logo.png
+[/code]
+[code html]
+<p><img src="https://example.com/logo.png" alt="The new logo"></p>
+[/code]
+
+h3. Escaped markers stay in alt text {#images-alt-escapes}
+[code om]
+![A \*star\* rating]:https://example.com/star.png
+[/code]
+[code html]
+<p><img src="https://example.com/star.png" alt="A *star* rating"></p>
+[/code]
+
+h3. Ampersand in alt text is escaped in the attribute {#images-alt-ampersand}
+[code om]
+![Salt & pepper]:https://example.com/spices.png
+[/code]
+[code html]
+<p><img src="https://example.com/spices.png" alt="Salt &amp; pepper"></p>
+[/code]
+
+h3. Empty alt text marks a decorative image {#images-decorative}
+[code om]
+![]:https://example.com/divider.png
+[/code]
+[code html]
+<p><img src="https://example.com/divider.png" alt=""></p>
+[/code]
+
+h2. Linked Images
+
+h3. Linked image {#images-linked}
+[code om]
+[![Alt text]:https://example.com/image.png]:https://example.com
+[/code]
+[code html]
+<p><a href="https://example.com"><img src="https://example.com/image.png" alt="Alt text"></a></p>
+[/code]
+
+h3. Linked image with dimensions {#images-linked-size}
+[code om]
+[![Home]{32x32}:https://example.com/home.png]:/
+[/code]
+[code html]
+<p><a href="/"><img src="https://example.com/home.png" alt="Home" width="32" height="32"></a></p>
+[/code]
+
+h3. Linked decorative image without other text is an error {#images-linked-unnamed}
+[code om]
+[![]:https://example.com/icon.png]:https://example.com
+[/code]
+[code error]
+unnamed-linked-image 1
+[/code]
+
+h3. Linked decorative image with other text is valid {#images-linked-decorative-with-text}
+[code om]
+[![]:https://example.com/icon.png Settings]:/settings
+[/code]
+[code html]
+<p><a href="/settings"><img src="https://example.com/icon.png" alt=""> Settings</a></p>
+[/code]
+
+h2. Image URLs
+
+h3. www gets https {#images-url-www}
+[code om]
+![Logo]:www.example.com/logo.png
+[/code]
+[code html]
+<p><img src="https://www.example.com/logo.png" alt="Logo"></p>
+[/code]
+
+h3. Trailing punctuation is not part of an image URL {#images-url-trailing-period}
+[code om]
+See ![Chart]:https://example.com/chart.png.
+[/code]
+[code html]
+<p>See <img src="https://example.com/chart.png" alt="Chart">.</p>
+[/code]
+
+h3. Relative image path is unchanged {#images-url-relative}
+[code om]
+![Logo]:/img/logo.png
+[/code]
+[code html]
+<p><img src="/img/logo.png" alt="Logo"></p>
+[/code]

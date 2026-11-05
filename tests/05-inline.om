@@ -1,0 +1,724 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Inline formatting
+[/meta]
+
+h1. Inline Formatting
+
+Tests for Section 5 of the specification. Inputs start with a word where needed, so that no line begins with a list marker.
+
+h2. Elements
+
+h3. Bold {#inline-bold}
+[code om]
+Some *bold* text
+[/code]
+[code html]
+<p>Some <strong>bold</strong> text</p>
+[/code]
+
+h3. Italic {#inline-italic}
+[code om]
+Some _italic_ text
+[/code]
+[code html]
+<p>Some <em>italic</em> text</p>
+[/code]
+
+h3. Underline {#inline-underline}
+[code om]
+Some __underlined__ text
+[/code]
+[code html]
+<p>Some <u>underlined</u> text</p>
+[/code]
+
+h3. Deletion {#inline-deleted}
+[code om]
+Some -deleted- text
+[/code]
+[code html]
+<p>Some <del>deleted</del> text</p>
+[/code]
+
+h3. Insertion {#inline-inserted}
+[code om]
+Some +inserted+ text
+[/code]
+[code html]
+<p>Some <ins>inserted</ins> text</p>
+[/code]
+
+h3. Subscript {#inline-subscript}
+[code om]
+Some ~subscript~ text
+[/code]
+[code html]
+<p>Some <sub>subscript</sub> text</p>
+[/code]
+
+h3. Superscript {#inline-superscript}
+[code om]
+Some ^superscript^ text
+[/code]
+[code html]
+<p>Some <sup>superscript</sup> text</p>
+[/code]
+
+h3. Keyboard {#inline-kbd}
+[code om]
+Press =Enter= to continue
+[/code]
+[code html]
+<p>Press <kbd>Enter</kbd> to continue</p>
+[/code]
+
+h3. Highlight {#inline-highlight}
+[code om]
+Some ==highlighted== text
+[/code]
+[code html]
+<p>Some <mark>highlighted</mark> text</p>
+[/code]
+
+h3. Code {#inline-code}
+[code om]
+Call `print()` here
+[/code]
+[code html]
+<p>Call <code>print()</code> here</p>
+[/code]
+
+h3. Several words inside markers {#inline-several-words}
+[code om]
+This is *quite important* indeed
+[/code]
+[code html]
+<p>This is <strong>quite important</strong> indeed</p>
+[/code]
+
+h3. Whole paragraph formatted {#inline-whole-paragraph}
+[code om]
+_Everything here_
+[/code]
+[code html]
+<p><em>Everything here</em></p>
+[/code]
+
+h3. Bold at line start is not a list item {#inline-bold-line-start}
+A list marker needs a following space, so this line is a paragraph.
+[code om]
+*Bold* start
+[/code]
+[code html]
+<p><strong>Bold</strong> start</p>
+[/code]
+
+h3. Deletion at line start is not a list item {#inline-deleted-line-start}
+[code om]
+-Old- text
+[/code]
+[code html]
+<p><del>Old</del> text</p>
+[/code]
+
+h3. Two spans on one line {#inline-two-spans}
+[code om]
+Both *a* and *b* here
+[/code]
+[code html]
+<p>Both <strong>a</strong> and <strong>b</strong> here</p>
+[/code]
+
+h3. Adjacent spans of different kinds {#inline-adjacent-spans}
+[code om]
+Then *bold*_italic_ together
+[/code]
+[code html]
+<p>Then <strong>bold</strong><em>italic</em> together</p>
+[/code]
+
+h3. Unpaired marker is literal {#inline-unpaired}
+[code om]
+An *unclosed marker here
+[/code]
+[code html]
+<p>An *unclosed marker here</p>
+[/code]
+
+h2. Nesting
+
+h3. Bold italic {#inline-nesting-bold-italic}
+[code om]
+*_bold italic_*
+[/code]
+[code html]
+<p><strong><em>bold italic</em></strong></p>
+[/code]
+
+h3. Bold inside italic {#inline-nesting-bold-in-italic}
+[code om]
+Text _italic with *bold* inside_ end
+[/code]
+[code html]
+<p>Text <em>italic with <strong>bold</strong> inside</em> end</p>
+[/code]
+
+h3. Three levels {#inline-nesting-three-levels}
+[code om]
+Press *_=Esc=_* now
+[/code]
+[code html]
+<p>Press <strong><em><kbd>Esc</kbd></em></strong> now</p>
+[/code]
+
+h3. Keyboard inside highlight {#inline-nesting-kbd-in-highlight}
+[code om]
+Text ==Press =Enter= now== end
+[/code]
+[code html]
+<p>Text <mark>Press <kbd>Enter</kbd> now</mark> end</p>
+[/code]
+
+h3. Italic inside underline {#inline-nesting-italic-in-underline}
+[code om]
+Text __under _and italic_ line__ end
+[/code]
+[code html]
+<p>Text <u>under <em>and italic</em> line</u> end</p>
+[/code]
+
+h3. An element cannot nest inside itself {#inline-nesting-same-element}
+The second `*` would open a span of a kind that is already open, so it is literal. The third `*` closes the first.
+[code om]
+*outer *inner* outer*
+[/code]
+[code html]
+<p><strong>outer *inner</strong> outer*</p>
+[/code]
+
+h2. Strict Pairing
+
+h3. Overlapping markers are literal {#inline-overlap}
+[code om]
+*_bad overlap*_
+[/code]
+[code html]
+<p>*_bad overlap*_</p>
+[/code]
+
+h3. Overlap makes every opener above it literal {#inline-overlap-openers-above}
+[code om]
+Text *a _b =c* d_ e= end
+[/code]
+[code html]
+<p>Text *a _b =c* d_ e= end</p>
+[/code]
+
+h3. Overlap does not affect spans already closed {#inline-overlap-closed-spans}
+[code om]
+Text _x_ *a _b* c
+[/code]
+[code html]
+<p>Text <em>x</em> *a _b* c</p>
+[/code]
+
+h3. An unclosed inner opener makes the outer pair overlap {#inline-overlap-unclosed-inner}
+[code om]
+Text *a _b c* end
+[/code]
+[code html]
+<p>Text *a _b c* end</p>
+[/code]
+
+h3. An unclosed outer opener is literal at the end of the line {#inline-unclosed-outer}
+[code om]
+Text *a _b_ c
+[/code]
+[code html]
+<p>Text *a <em>b</em> c</p>
+[/code]
+
+h3. Markers pair only within one line {#inline-pairing-one-line}
+[code om]
+*bold
+text* here
+[/code]
+[code html]
+<p>*bold<br>
+text* here</p>
+[/code]
+
+h2. Marker Boundaries
+
+h3. Spaces inside both markers {#inline-boundary-spaces-inside}
+[code om]
+Text * not bold * here
+[/code]
+[code html]
+<p>Text * not bold * here</p>
+[/code]
+
+h3. Space before the closing marker {#inline-boundary-space-before-closer}
+[code om]
+Text *also not bold * here
+[/code]
+[code html]
+<p>Text *also not bold * here</p>
+[/code]
+
+h3. Hyphens inside words {#inline-boundary-hyphenated}
+[code om]
+It is well-known and self-evident
+[/code]
+[code html]
+<p>It is well-known and self-evident</p>
+[/code]
+
+h3. Underscores inside words {#inline-boundary-snake-case}
+[code om]
+Use snake_case_name here
+[/code]
+[code html]
+<p>Use snake_case_name here</p>
+[/code]
+
+h3. Equals signs between letters {#inline-boundary-equals}
+[code om]
+Set a=b and c=d
+[/code]
+[code html]
+<p>Set a=b and c=d</p>
+[/code]
+
+h3. Asterisks between digits {#inline-boundary-digits}
+[code om]
+Compute 2*3*4 now
+[/code]
+[code html]
+<p>Compute 2*3*4 now</p>
+[/code]
+
+h3. Plus signs inside a keyboard span {#inline-boundary-ctrl-alt-del}
+[code om]
+=Ctrl+Alt+Del=
+[/code]
+[code html]
+<p><kbd>Ctrl+Alt+Del</kbd></p>
+[/code]
+
+h3. Closing marker followed by a letter {#inline-boundary-closer-before-letter}
+[code om]
+Text *bold*ly here
+[/code]
+[code html]
+<p>Text *bold*ly here</p>
+[/code]
+
+h3. Opening marker preceded by a letter {#inline-boundary-opener-after-letter}
+[code om]
+Text un*believ*able here
+[/code]
+[code html]
+<p>Text un*believ*able here</p>
+[/code]
+
+h3. Equals with spaces around {#inline-boundary-spaced-equals}
+[code om]
+Test if a == b then
+[/code]
+[code html]
+<p>Test if a == b then</p>
+[/code]
+
+h3. Markers next to punctuation {#inline-boundary-punctuation}
+Punctuation is neither a letter nor a digit nor whitespace.
+[code om]
+Text (*bold*), "_italic_" and -gone-.
+[/code]
+[code html]
+<p>Text (<strong>bold</strong>), "<em>italic</em>" and <del>gone</del>.</p>
+[/code]
+
+h3. Cyrillic text is formatted {#inline-boundary-cyrillic}
+[code om]
+Це *жирний* текст
+[/code]
+[code html]
+<p>Це <strong>жирний</strong> текст</p>
+[/code]
+
+h3. Cyrillic letters count as letters {#inline-boundary-cyrillic-intraword}
+[code om]
+Слово_з_підкресленням тут
+[/code]
+[code html]
+<p>Слово_з_підкресленням тут</p>
+[/code]
+
+h3. Combining marks count as letters {#inline-boundary-combining-mark}
+The character before the first `*` is a combining acute accent (U+0301), General Category M.
+[code om]
+Наголос: сло́*во* тут
+[/code]
+[code html]
+<p>Наголос: сло́*во* тут</p>
+[/code]
+
+h3. An escaped non-breaking space is whitespace {#inline-boundary-escaped-nbsp}
+[code om]
+Text *\ bold* here
+[/code]
+[code html]
+<p>Text *&nbsp;bold* here</p>
+[/code]
+
+h3. A typed non-breaking space is whitespace {#inline-boundary-typed-nbsp}
+The input is `Text *`, U+00A0, `bold* here`.
+[code hex]
+54 65 78 74 20 2A C2 A0 62 6F 6C 64 2A 20 68 65 72 65
+[/code]
+[code html]
+<p>Text *&nbsp;bold* here</p>
+[/code]
+
+h3. An escaped character counts as itself {#inline-boundary-escaped-backslash}
+The `*` follows a backslash, which is not a letter, so it opens.
+[code om]
+Text \\*bold* here
+[/code]
+[code html]
+<p>Text \<strong>bold</strong> here</p>
+[/code]
+
+h3. Escaped markers are not markers {#inline-boundary-escaped-markers}
+[code om]
+Text \*not bold\* here
+[/code]
+[code html]
+<p>Text *not bold* here</p>
+[/code]
+
+h3. An escaped closer leaves the span unclosed {#inline-boundary-escaped-closer}
+[code om]
+Text *bold\* here
+[/code]
+[code html]
+<p>Text *bold* here</p>
+[/code]
+
+h3. CJK characters count as letters {#inline-boundary-cjk}
+Text without spaces between words cannot be formatted mid-sentence. This is a known limitation of the boundary rule.
+[code om]
+中文*粗体*中文
+[/code]
+[code html]
+<p>中文*粗体*中文</p>
+[/code]
+
+h2. Subscript and Superscript Exemption
+
+h3. Chemistry and physics {#inline-exemption-spec-example}
+[code om]
+H~2~O and E=mc^2^
+[/code]
+[code html]
+<p>H<sub>2</sub>O and E=mc<sup>2</sup></p>
+[/code]
+
+h3. Superscript after a number {#inline-exemption-ordinal}
+[code om]
+The 10^th^ floor
+[/code]
+[code html]
+<p>The 10<sup>th</sup> floor</p>
+[/code]
+
+h3. Whitespace conditions still apply {#inline-exemption-whitespace}
+[code om]
+Then E=mc^ 2^ fails
+[/code]
+[code html]
+<p>Then E=mc^ 2^ fails</p>
+[/code]
+
+h3. Approximate tildes stay literal {#inline-exemption-approximate}
+A tilde preceded by a space cannot close a span.
+[code om]
+It takes ~5 to ~10 minutes
+[/code]
+[code html]
+<p>It takes ~5 to ~10 minutes</p>
+[/code]
+
+h3. Closing is tried before opening {#inline-exemption-close-first}
+[code om]
+Formula H~2~SO~4~ here
+[/code]
+[code html]
+<p>Formula H<sub>2</sub>SO<sub>4</sub> here</p>
+[/code]
+
+h3. Consecutive superscripts {#inline-exemption-consecutive}
+[code om]
+Expand x^2^y^3^ here
+[/code]
+[code html]
+<p>Expand x<sup>2</sup>y<sup>3</sup> here</p>
+[/code]
+
+h2. Marker Runs
+
+h3. Double underscore is underline, not double italic {#inline-double-underline}
+[code om]
+Text __word__ here
+[/code]
+[code html]
+<p>Text <u>word</u> here</p>
+[/code]
+
+h3. Double underscore around an identifier {#inline-double-dunder}
+Underline wins; use a code span for identifiers like this.
+[code om]
+Call __init__ first
+[/code]
+[code html]
+<p>Call <u>init</u> first</p>
+[/code]
+
+h3. Double equals is highlight, not double keyboard {#inline-double-highlight}
+[code om]
+Text ==word== here
+[/code]
+[code html]
+<p>Text <mark>word</mark> here</p>
+[/code]
+
+h3. Double asterisks are literal {#inline-run-double-asterisk}
+Bold in OireMark is a single `*`.
+[code om]
+**bold** here
+[/code]
+[code html]
+<p>**bold** here</p>
+[/code]
+
+h3. Triple underscores are literal {#inline-run-triple-underscore}
+[code om]
+Text ___x___ here
+[/code]
+[code html]
+<p>Text ___x___ here</p>
+[/code]
+
+h3. Triple equals are literal {#inline-run-triple-equals}
+[code om]
+Text ===x=== here
+[/code]
+[code html]
+<p>Text ===x=== here</p>
+[/code]
+
+h3. Double plus signs are literal {#inline-run-double-plus}
+[code om]
+Text ++x++ here
+[/code]
+[code html]
+<p>Text ++x++ here</p>
+[/code]
+
+h3. Empty content is literal {#inline-run-empty}
+[code om]
+Text (--) and (**) and (==) here
+[/code]
+[code html]
+<p>Text (--) and (**) and (==) here</p>
+[/code]
+
+h2. Code Spans
+
+h3. Backslashes are ordinary characters {#inline-code-backslashes}
+[code om]
+Path `C:\Users\` here
+[/code]
+[code html]
+<p>Path <code>C:\Users\</code> here</p>
+[/code]
+
+h3. A lone backslash in a span {#inline-code-lone-backslash}
+[code om]
+Backslash `\` alone
+[/code]
+[code html]
+<p>Backslash <code>\</code> alone</p>
+[/code]
+
+h3. No escapes inside {#inline-code-no-escapes}
+[code om]
+Literal `\*` here
+[/code]
+[code html]
+<p>Literal <code>\*</code> here</p>
+[/code]
+
+h3. No formatting inside {#inline-code-no-formatting}
+[code om]
+Literal `*not bold* and _not italic_` here
+[/code]
+[code html]
+<p>Literal <code>*not bold* and _not italic_</code> here</p>
+[/code]
+
+h3. Backtick inside a double-backtick span {#inline-code-double-run}
+[code om]
+Text `` a`b `` here
+[/code]
+[code html]
+<p>Text <code>a`b</code> here</p>
+[/code]
+
+h3. Span beginning and ending with a backtick {#inline-code-quoted}
+[code om]
+Text `` `quoted` `` here
+[/code]
+[code html]
+<p>Text <code>`quoted`</code> here</p>
+[/code]
+
+h3. Double run without padding spaces {#inline-code-double-run-unpadded}
+[code om]
+Text ``a`b`` here
+[/code]
+[code html]
+<p>Text <code>a`b</code> here</p>
+[/code]
+
+h3. Only one space is stripped from each side {#inline-code-strip-one-space}
+[code om]
+Text ``  a`b  `` here
+[/code]
+[code html]
+<p>Text <code> a`b </code> here</p>
+[/code]
+
+h3. Space on one side only is kept {#inline-code-space-one-side}
+[code om]
+Text ` a` here
+[/code]
+[code html]
+<p>Text <code> a</code> here</p>
+[/code]
+
+h3. Content made only of spaces is kept {#inline-code-only-spaces}
+[code om]
+Text `  ` here
+[/code]
+[code html]
+<p>Text <code>  </code> here</p>
+[/code]
+
+h3. Unclosed span is literal {#inline-code-unclosed}
+[code om]
+An `unclosed span here
+[/code]
+[code html]
+<p>An `unclosed span here</p>
+[/code]
+
+h3. Runs of different length do not match {#inline-code-run-mismatch}
+[code om]
+Text `a`` here
+[/code]
+[code html]
+<p>Text `a`` here</p>
+[/code]
+
+h3. A span cannot cross a line break {#inline-code-same-line}
+[code om]
+Start `open
+close` end
+[/code]
+[code html]
+<p>Start `open<br>
+close` end</p>
+[/code]
+
+h3. Spans may appear inside words {#inline-code-inside-word}
+[code om]
+Text foo`bar`baz here
+[/code]
+[code html]
+<p>Text foo<code>bar</code>baz here</p>
+[/code]
+
+h3. An escaped backtick cannot open a span {#inline-code-escaped-backtick}
+The escaped backtick is literal. The second backtick has no closing run on the line, so it is literal too.
+[code om]
+Text a \`b` c
+[/code]
+[code html]
+<p>Text a `b` c</p>
+[/code]
+
+h2. Precedence
+
+h3. A marker inside a code span does not close bold {#inline-precedence-code-over-bold}
+[code om]
+*bold `code*` here*
+[/code]
+[code html]
+<p><strong>bold <code>code*</code> here</strong></p>
+[/code]
+
+h3. A marker inside a code span does not close italic {#inline-precedence-code-over-italic}
+[code om]
+Text _a `_` b_ end
+[/code]
+[code html]
+<p>Text <em>a <code>_</code> b</em> end</p>
+[/code]
+
+h3. Code span inside bold {#inline-precedence-code-in-bold}
+[code om]
+Text *`code`* end
+[/code]
+[code html]
+<p>Text <strong><code>code</code></strong> end</p>
+[/code]
+
+h2. Markers and Links
+
+h3. A link can end a formatted span {#inline-link-ends-span}
+A trailing marker character is removed from the end of a URL.
+[code om]
+*see [docs]:https://example.com*
+[/code]
+[code html]
+<p><strong>see <a href="https://example.com">docs</a></strong></p>
+[/code]
+
+h3. A marker inside link text never pairs with one outside {#inline-link-text-own-pairing}
+The `*` inside the link text is literal. The outer pair makes bold, because a link next to a marker counts as punctuation.
+[code om]
+*[a*]:https://example.com b*
+[/code]
+[code html]
+<p><strong><a href="https://example.com">a*</a> b</strong></p>
+[/code]
+
+h3. A marker inside a language span never pairs with one outside {#inline-lang-own-pairing}
+[code om]
+Text *a [lang fr]b* c[/lang] d*
+[/code]
+[code html]
+<p>Text <strong>a <span lang="fr">b* c</span> d</strong></p>
+[/code]
+
+h3. Markers inside a URL are literal {#inline-link-url-literal}
+Only the final `_` is removed from the URL; the one inside it stays.
+[code om]
+Text _read [it]:https://example.com/a_b_ end
+[/code]
+[code html]
+<p>Text <em>read <a href="https://example.com/a_b">it</a></em> end</p>
+[/code]

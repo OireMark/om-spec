@@ -1,0 +1,533 @@
+[meta]
+lang: en
+title: OireMark conformance tests: Definition lists
+[/meta]
+
+h1. Definition Lists
+
+Tests for Section 15 of the specification.
+
+h2. Short form
+
+h3. Terms and definitions {#definitions-basic}
+[code om]
+; Term
+: Definition text
+; Another term
+: Another definition
+[/code]
+[code html]
+<dl>
+  <dt>Term</dt>
+  <dd>Definition text</dd>
+  <dt>Another term</dt>
+  <dd>Another definition</dd>
+</dl>
+[/code]
+
+h3. Several terms and several definitions {#definitions-multiple}
+[code om]
+; JPEG
+; JPG
+: A lossy image format for photographs.
+: Pronounced "jay-peg".
+[/code]
+[code html]
+<dl>
+  <dt>JPEG</dt>
+  <dt>JPG</dt>
+  <dd>A lossy image format for photographs.</dd>
+  <dd>Pronounced "jay-peg".</dd>
+</dl>
+[/code]
+
+h3. Colons belong to the term {#definitions-colon-in-term}
+[code om]
+; Note: deprecated
+: Use the new API instead.
+[/code]
+[code html]
+<dl>
+  <dt>Note: deprecated</dt>
+  <dd>Use the new API instead.</dd>
+</dl>
+[/code]
+
+h3. There is no one-line form {#definitions-no-one-line-form}
+[code om]
+; Term : not a definition
+: The real definition
+[/code]
+[code html]
+<dl>
+  <dt>Term : not a definition</dt>
+  <dd>The real definition</dd>
+</dl>
+[/code]
+
+h3. Inline formatting in terms and definitions {#definitions-formatting}
+[code om]
+; *Bold* term
+: Definition with `code` and _emphasis_
+[/code]
+[code html]
+<dl>
+  <dt><strong>Bold</strong> term</dt>
+  <dd>Definition with <code>code</code> and <em>emphasis</em></dd>
+</dl>
+[/code]
+
+h3. A term ends a paragraph without a blank line {#definitions-interrupt-paragraph}
+[code om]
+Glossary:
+; Term
+: Definition
+[/code]
+[code html]
+<p>Glossary:</p>
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+[/code]
+
+h3. Indentation is ignored {#definitions-indented}
+[code om]
+  ; Term
+  : Definition
+[/code]
+[code html]
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+[/code]
+
+h2. Space after the marker
+
+h3. Smiley at line start is text {#definitions-no-space-smiley}
+[code om]
+:)
+[/code]
+[code html]
+<p>:)</p>
+[/code]
+
+h3. Semicolon without a space is text {#definitions-no-space-term}
+[code om]
+;not a term
+[/code]
+[code html]
+<p>;not a term</p>
+[/code]
+
+h3. Escaped term marker is text {#definitions-escaped-term}
+[code om]
+\; not a term
+[/code]
+[code html]
+<p>; not a term</p>
+[/code]
+
+h3. Escaped definition marker is text {#definitions-escaped-definition}
+[code om]
+\: not a definition
+[/code]
+[code html]
+<p>: not a definition</p>
+[/code]
+
+h2. Continuation lines
+
+h3. Unmarked line continues the definition {#definitions-continuation}
+[code om]
+; Address
+: 12 Main Street
+Springfield
+[/code]
+[code html]
+<dl>
+  <dt>Address</dt>
+  <dd>12 Main Street<br>
+  Springfield</dd>
+</dl>
+[/code]
+
+h3. Unmarked line after a term is an error {#definitions-continuation-after-term}
+[code om]
+; Term
+Not a definition
+[/code]
+[code error]
+term-without-definition 1
+[/code]
+
+h2. Errors
+
+h3. Definition with no term {#definitions-error-no-term}
+[code om]
+: Orphan definition
+[/code]
+[code error]
+definition-without-term 1
+[/code]
+
+h3. Definition after a paragraph and a blank line {#definitions-error-after-paragraph}
+[code om]
+Some text.
+
+: Orphan definition
+[/code]
+[code error]
+definition-without-term 3
+[/code]
+
+h3. Definition after a blank line ends the previous list {#definitions-error-after-blank}
+[code om]
+; Term
+: Definition
+
+: Orphan definition
+[/code]
+[code error]
+definition-without-term 4
+[/code]
+
+h3. Term followed by a blank line {#definitions-error-term-blank}
+[code om]
+; Term
+
+: Definition
+[/code]
+[code error]
+term-without-definition 1
+[/code]
+
+h3. Term at the end of the document {#definitions-error-term-at-end}
+[code om]
+; Term
+[/code]
+[code error]
+term-without-definition 1
+[/code]
+
+h3. Term followed by a heading {#definitions-error-term-heading}
+[code om]
+; Term
+h2. Heading
+[/code]
+[code error]
+term-without-definition 1
+[/code]
+
+h3. Second of two terms followed by nothing {#definitions-error-second-term}
+[code om]
+; First
+: Defined
+; Second
+[/code]
+[code error]
+term-without-definition 3
+[/code]
+
+h2. Long form
+
+h3. Single paragraph {#definitions-long-basic}
+[code om]
+[def Term]
+A longer definition that
+spans multiple lines.
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt>Term</dt>
+  <dd>
+    <p>A longer definition that<br>
+    spans multiple lines.</p>
+  </dd>
+</dl>
+[/code]
+
+h3. Several paragraphs {#definitions-long-paragraphs}
+[code om]
+[def Term]
+First paragraph.
+
+Second paragraph.
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt>Term</dt>
+  <dd>
+    <p>First paragraph.</p>
+    <p>Second paragraph.</p>
+  </dd>
+</dl>
+[/code]
+
+h3. Code inside a long definition {#definitions-long-code}
+[code om]
+[def build]
+Run this:
+
+```
+om build
+```
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt>build</dt>
+  <dd>
+    <p>Run this:</p>
+    <pre><code>om build
+</code></pre>
+  </dd>
+</dl>
+[/code]
+
+h3. Formatted term {#definitions-long-formatted-term}
+[code om]
+[def *Bold* term]
+Text.
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt><strong>Bold</strong> term</dt>
+  <dd>
+    <p>Text.</p>
+  </dd>
+</dl>
+[/code]
+
+h3. List inside a long definition {#definitions-long-list}
+[code om]
+[def Steps]
+# Open the file
+# Save it
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt>Steps</dt>
+  <dd>
+    <ol>
+      <li>Open the file</li>
+      <li>Save it</li>
+    </ol>
+  </dd>
+</dl>
+[/code]
+
+h3. Paragraph followed by a list inside a long definition {#definitions-long-paragraph-list}
+[code om]
+[def Colors]
+Primary colors:
+* Red
+* Blue
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt>Colors</dt>
+  <dd>
+    <p>Primary colors:</p>
+    <ul>
+      <li>Red</li>
+      <li>Blue</li>
+    </ul>
+  </dd>
+</dl>
+[/code]
+
+h3. Long form without a term is an error {#definitions-long-no-term}
+[code om]
+[def]
+Text.
+[/def]
+[/code]
+[code error]
+def-without-term 1
+[/code]
+
+h3. Headings are not allowed inside {#definitions-long-no-heading}
+[code om]
+[def Term]
+h2. Heading
+[/def]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Long definitions do not nest {#definitions-long-no-nesting}
+[code om]
+[def Outer]
+[def Inner]
+Text.
+[/def]
+[/def]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Short form is not allowed inside {#definitions-long-no-short-form}
+[code om]
+[def Outer]
+; Inner
+: Text
+[/def]
+[/code]
+[code error]
+invalid-nesting 2
+[/code]
+
+h3. Unclosed long definition {#definitions-long-unclosed}
+[code om]
+[def Term]
+Text.
+[/code]
+[code error]
+unclosed-block 1
+[/code]
+
+h2. Grouping
+
+h3. Blank line separates lists {#definitions-grouping-blank-line}
+[code om]
+; Apple
+: A fruit
+; Banana
+: Another fruit
+
+; Orange
+: Yet another fruit
+[/code]
+[code html]
+<dl>
+  <dt>Apple</dt>
+  <dd>A fruit</dd>
+  <dt>Banana</dt>
+  <dd>Another fruit</dd>
+</dl>
+<dl>
+  <dt>Orange</dt>
+  <dd>Yet another fruit</dd>
+</dl>
+[/code]
+
+h3. Short form followed by long form {#definitions-grouping-short-long}
+[code om]
+; Apple
+: A fruit
+[def Banana]
+Another fruit.
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt>Apple</dt>
+  <dd>A fruit</dd>
+  <dt>Banana</dt>
+  <dd>
+    <p>Another fruit.</p>
+  </dd>
+</dl>
+[/code]
+
+h3. Long form followed by short form {#definitions-grouping-long-short}
+[code om]
+[def Apple]
+A fruit.
+[/def]
+; Banana
+: Another fruit
+[/code]
+[code html]
+<dl>
+  <dt>Apple</dt>
+  <dd>
+    <p>A fruit.</p>
+  </dd>
+  <dt>Banana</dt>
+  <dd>Another fruit</dd>
+</dl>
+[/code]
+
+h3. Consecutive long forms {#definitions-grouping-long-long}
+[code om]
+[def Apple]
+A fruit.
+[/def]
+[def Banana]
+Another fruit.
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt>Apple</dt>
+  <dd>
+    <p>A fruit.</p>
+  </dd>
+  <dt>Banana</dt>
+  <dd>
+    <p>Another fruit.</p>
+  </dd>
+</dl>
+[/code]
+
+h3. Long forms separated by a blank line {#definitions-grouping-long-blank}
+[code om]
+[def Apple]
+A fruit.
+[/def]
+
+[def Banana]
+Another fruit.
+[/def]
+[/code]
+[code html]
+<dl>
+  <dt>Apple</dt>
+  <dd>
+    <p>A fruit.</p>
+  </dd>
+</dl>
+<dl>
+  <dt>Banana</dt>
+  <dd>
+    <p>Another fruit.</p>
+  </dd>
+</dl>
+[/code]
+
+h2. Profiles
+
+h3. Definition lists are not allowed in the basic profile {#definitions-profile-basic}
+; profile
+: basic
+[code om]
+; Term
+: Definition
+[/code]
+[code error]
+feature-not-in-profile 1
+[/code]
+
+h3. Definition lists are allowed in the standard profile {#definitions-profile-standard}
+; profile
+: standard
+[code om]
+; Term
+: Definition
+[/code]
+[code html]
+<dl>
+  <dt>Term</dt>
+  <dd>Definition</dd>
+</dl>
+[/code]
